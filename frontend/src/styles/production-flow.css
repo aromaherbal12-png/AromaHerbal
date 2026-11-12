@@ -1,0 +1,255 @@
+.production-flow{display:flex;flex-direction:column;gap:18px}.production-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px}.production-summary-card{min-width:0;padding:14px;background:#f5f8f4;border:1px solid var(--line);border-radius:11px;display:flex;flex-direction:column;gap:8px}.production-summary-card small{color:var(--muted);font-size:11px}.production-summary-card b{color:var(--green-dark);font-size:20px;overflow-wrap:anywhere}.production-plan-panel,.production-register,.production-reports,.production-step-panel,.production-batch-summary{max-width:none}.production-plan-panel h2,.production-register h2,.production-reports h2{margin:0 0 5px;font-size:20px}.production-section-title{display:flex;align-items:flex-start;gap:13px;margin-bottom:21px}.production-section-title h2{font-size:19px;margin:0 0 5px}.production-section-title p,.production-register .muted,.production-reports .muted{margin:0;color:var(--muted);font-size:13px;line-height:1.5}.step-number{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:#e8f1e8;display:grid;place-items:center;color:var(--green-dark);font-weight:800}.production-material-plan{grid-column:1/-1;padding:16px;background:#f7f9f6;border:1px solid var(--line);border-radius:11px}.production-material-row{display:grid;grid-template-columns:minmax(200px,1.5fr) minmax(150px,.7fr) auto;align-items:end;gap:12px;padding:10px 0;border-top:1px solid #e5eae5}.production-material-row .field-label{min-width:0}.text-button{height:44px;border:0;background:none;color:#a3332b;font-weight:700}.text-button:disabled{opacity:.4}.production-filter{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}.production-filter select{height:38px;border:1px solid #cbd6cc;border-radius:8px;padding:0 9px;background:white}.production-cell-sub{display:block;color:var(--muted);font-size:11px;margin-top:4px}.production-status{display:inline-flex;border-radius:99px;padding:5px 9px;font-size:11px;font-weight:800;white-space:nowrap}.production-status.ok{background:#e4f2e5;color:#27603b}.production-status.bad{background:#fae7e5;color:#a3332b}.production-status.live{background:#e6f0fb;color:#245987}.production-status.pending{background:#fff3d9;color:#795914}.production-workflow-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:19px;background:#fff;border:1px solid var(--line);border-radius:13px}.production-workflow-heading h2{margin:5px 0;font-size:22px}.production-workflow-heading p{margin:0;color:var(--muted);font-size:13px}.production-heading-actions{display:flex;align-items:center;gap:10px}.production-stepper{display:grid;grid-template-columns:repeat(6,minmax(100px,1fr));gap:8px;padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:auto}.production-step{display:flex;align-items:center;gap:7px;color:var(--muted)}.production-step span{width:24px;height:24px;flex:0 0 24px;border:1px solid #cbd6cc;border-radius:50%;display:grid;place-items:center;font-size:11px}.production-step.complete span{background:var(--green);color:white;border-color:var(--green)}.production-step small{font-size:11px;font-weight:700;white-space:nowrap}.production-message{padding:12px 14px;border:1px solid #cbdacb;border-radius:9px;background:#f1f8f0;color:#315d3d;font-size:13px;font-weight:700}.production-step-panel .form-grid{margin-bottom:16px}.production-step-panel .full-field{grid-column:1/-1}.production-step-panel textarea{width:100%;min-height:74px;padding:10px;border:1px solid #cbd6cc;border-radius:9px;background:#fff;color:var(--ink);font:inherit;resize:vertical}.production-requirement-list{display:flex;flex-direction:column;gap:7px;margin:0 0 17px;padding:13px 15px;background:#f5f8f4;border:1px solid var(--line);border-radius:10px;font-size:13px}.production-requirement-list span{color:#46564b}.production-live-banner{display:flex;align-items:center;gap:12px;padding:15px;margin-bottom:18px;border:1px solid var(--line);border-radius:11px;background:#f7f9f6}.production-live-banner div{display:flex;flex:1;flex-direction:column;gap:4px}.production-live-banner small{font-size:12px;color:var(--muted)}.production-live-banner strong{font-size:15px}.machine-lamp{width:12px;height:12px;border-radius:50%;background:#bbb}.machine-lamp.running{background:#37a35a;box-shadow:0 0 0 5px #37a35a20}.machine-lamp.stopped{background:#c4473e}.production-action-row{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-top:17px}.production-ratio-card{display:flex;flex-direction:column;align-items:center;gap:7px;padding:23px;margin:8px 0 17px;border:1px solid #cbdacb;border-radius:12px;background:#f4f8f3;text-align:center}.production-ratio-card>span,.production-ratio-card small{font-size:12px;color:var(--muted)}.production-ratio-card strong{font-size:36px;color:var(--green-dark)}.production-ratio-card.over{border-color:#e5b6b1;background:#fff5f3}.production-ratio-card.over strong,.production-ratio-card.over b{color:#a3332b}.production-ratio-card p{margin:3px 0;font-size:13px}.production-error-panel{border-color:#e5b6b1}.production-history{margin-top:21px;padding-top:16px;border-top:1px solid var(--line)}.production-history h3{margin:0 0 10px;font-size:15px}.production-history>div{display:flex;gap:10px;position:relative;padding:0 0 10px}.production-history>div>span{width:9px;height:9px;flex:0 0 9px;margin-top:5px;border-radius:50%;background:#67916e}.production-history p{display:flex;flex-direction:column;gap:3px;margin:0;font-size:12px}.production-history small{color:var(--muted)}.production-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.production-print-area{display:none}.production-print-sheet{display:none}.bmr-print-meta{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #222;border-left:1px solid #222;margin:10px 0}.bmr-print-meta>div{display:flex;flex-direction:column;gap:5px;min-height:46px;padding:8px;border-right:1px solid #222;border-bottom:1px solid #222}.production-print-sheet header{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;border:1px solid #222;text-align:center}.production-print-sheet header strong{font-size:13px}.production-print-sheet header span{font-size:18px;font-weight:800}.production-print-sheet h3{margin:12px 0 6px;font-size:12px}.production-print-sheet table{width:100%;border-collapse:collapse;font-size:10px}.production-print-sheet td,.production-print-sheet th{padding:6px;border:1px solid #222;white-space:normal}.production-print-sheet th{background:#f2f2f2!important}.production-print-sheet .bmr-parameters{min-height:60px;padding:9px;border:1px solid #222;white-space:pre-wrap;font-size:11px}.bmr-signatures{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:35px}.bmr-signatures span{padding-top:7px;border-top:1px solid #222;text-align:center;font-size:10px}.production-print-sheet footer{margin-top:13px;padding-top:6px;border-top:1px solid #777;text-align:center;font-size:9px;color:#444}
+@media(max-width:900px){.production-summary{grid-template-columns:repeat(3,minmax(0,1fr))}.production-stepper{grid-template-columns:repeat(3,minmax(0,1fr))}.production-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.production-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.production-material-row{grid-template-columns:1fr}.production-workflow-heading{flex-direction:column}.production-heading-actions{width:100%;justify-content:space-between}.production-stepper{grid-template-columns:repeat(2,minmax(0,1fr))}.production-live-banner{flex-wrap:wrap}.production-summary-grid{grid-template-columns:1fr 1fr}.production-action-row{align-items:stretch;flex-direction:column}.production-action-row button{width:100%}}
+@page{size:A4 portrait;margin:12mm}
+@media print{body *{visibility:hidden!important}.production-flow .production-print-area,.production-flow .production-print-area *{visibility:visible!important}.production-flow .production-print-area{display:block!important;position:absolute!important;inset:0 auto auto 0!important;width:100%!important;background:#fff!important}.production-flow .production-print-sheet{display:block!important;position:relative!important;width:100%!important;color:#111!important;background:#fff!important;font:10pt Arial,Helvetica,sans-serif!important}.production-print-sheet tr{break-inside:avoid;page-break-inside:avoid}.production-print-sheet table{table-layout:fixed}.production-print-sheet th,.production-print-sheet td{color:#111!important;background:#fff!important}}
+.bmr-attachment-list{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.bmr-attachment-list a{display:inline-flex;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:#f7f9f6;color:var(--green-dark);font-size:12px;font-weight:700;text-decoration:none}.bmr-attachment-list a:hover{text-decoration:underline}.production-reports h3{margin:24px 0 8px;font-size:15px}
+.production-page-tabs{display:flex;gap:8px;margin:0 0 18px;padding:0 0 8px;border-bottom:1px solid var(--line)}.production-page-tabs button{padding:11px 16px;border:0;border-bottom:3px solid transparent;border-radius:7px 7px 0 0;background:transparent;color:var(--muted);font-weight:750;cursor:pointer}.production-page-tabs button.active{border-bottom-color:var(--green);color:var(--green-dark);background:#f4f8f3}.production-workspace{display:grid;grid-template-columns:minmax(290px,.78fr) minmax(0,1.8fr);align-items:start;gap:18px}.production-workflow-rail{display:flex;flex-direction:column;gap:13px;min-width:0}.production-workflow-rail>.production-section-title{padding:17px;background:#fff;border:1px solid var(--line);border-radius:12px;margin:0}.production-register{padding:16px!important;overflow:hidden}.production-register .table-wrap{max-height:520px;overflow:auto}.production-register table{min-width:660px}.production-current-step{min-width:0;display:flex;flex-direction:column;gap:14px}.production-current-step>.panel{width:100%}.production-current-step .production-step-panel{max-width:none}.production-current-step .production-plan-panel{max-width:none}.production-workflow-rail .production-workflow-heading{display:flex;flex-direction:column;gap:10px;padding:16px}.production-workflow-rail .production-workflow-heading h2{font-size:20px}.production-vertical-steps{display:flex;flex-direction:column;gap:3px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px}.production-vertical-steps>div{display:flex;align-items:center;gap:10px;padding:8px 7px;color:#67736a}.production-vertical-steps>div>span{width:23px;height:23px;flex:0 0 23px;display:grid;place-items:center;border:1px solid #cbd6cc;border-radius:50%;font-size:11px}.production-vertical-steps>div.done>span{color:#fff;background:var(--green);border-color:var(--green)}.production-vertical-steps small{font-size:12px;font-weight:700}.production-rail-summary{display:flex;flex-direction:column;gap:7px;padding:14px;background:#f5f8f4;border:1px solid var(--line);border-radius:11px;font-size:12px}.production-rail-summary span{color:var(--muted)}.production-back-button{width:100%}.production-inspection-count{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:13px 15px;border-radius:10px;background:#f5f8f4}.production-inspection-count strong{font-size:22px;color:var(--green-dark)}.production-inspection-count span{color:var(--muted);font-size:12px}
+@media(max-width:980px){.production-workspace{grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr)}.production-workflow-rail .production-register{padding:12px!important}}
+@media(max-width:720px){.production-workspace{grid-template-columns:1fr}.production-workflow-rail{order:0}.production-current-step{order:1}.production-vertical-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.production-page-tabs button{flex:1;padding:10px 7px;font-size:12px}}
+
+/* ── BMR Cover Page Form ── */
+.bmr-cover-doc{border:1.5px solid #555;border-radius:4px;overflow:hidden;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#111}
+
+/* Company header */
+.bmr-cover-header{border-bottom:1.5px solid #555}
+.bmr-cover-company{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid #ccc}
+.bmr-cover-logo{height:38px;width:auto;object-fit:contain}
+.bmr-cover-company>div{display:flex;flex-direction:column;gap:2px}
+.bmr-cover-company b{font-size:13px;color:#111}
+.bmr-cover-company span{font-size:12px;color:#333}
+.bmr-cover-title-box{text-align:center;padding:10px;font-size:16px;font-weight:800;letter-spacing:.08em;border-top:1px solid #555;background:#fff}
+
+/* Fields table */
+.bmr-cover-table{width:100%;border-collapse:collapse}
+.bmr-cover-table th,.bmr-cover-table td{border:1px solid #888;padding:0;vertical-align:middle}
+.bmr-cover-table th{background:#f5f5f5;font-size:12px;font-weight:700;padding:6px 10px;white-space:nowrap;width:160px;color:#222}
+.bmr-cover-input{display:block;width:100%;border:none;outline:none;padding:8px 10px;font-size:13px;background:transparent;color:#111;min-height:34px}
+.bmr-cover-input:focus{background:#f9fdf9;outline:2px solid var(--green) inset}
+.bmr-cover-input[type="date"]{padding:6px 10px}
+
+/* Instruction / GMP sections */
+.bmr-cover-section{padding:14px 18px;border-top:1px solid #888}
+.bmr-cover-section-title{font-size:13px;font-weight:800;text-align:center;text-decoration:underline;margin-bottom:10px;letter-spacing:.04em;color:#111}
+.bmr-cover-gmp-intro{margin:0 0 8px;font-size:12px;color:#333}
+.bmr-cover-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.bmr-cover-list li{font-size:12px;color:#333;line-height:1.5}
+
+/* Signature table */
+.bmr-cover-sign-table{width:100%;border-collapse:collapse;border-top:1px solid #888}
+.bmr-cover-sign-table th{border:1px solid #888;padding:8px 10px;font-size:12px;font-weight:700;text-align:center;background:#f5f5f5;color:#222}
+.bmr-cover-sign-table td{border:1px solid #888;padding:0;vertical-align:middle}
+.bmr-sign-spacer td{height:48px}
+
+/* Extra planning fields below the document */
+.bmr-cover-extra-fields{margin-top:22px;padding:18px;background:#f7f9f6;border:1px solid var(--line);border-radius:11px}
+.bmr-cover-extra-title{font-size:13px;font-weight:800;color:var(--green-dark);letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+
+/* Save & Continue button row */
+.bmr-cover-actions{display:flex;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+
+@media(max-width:620px){
+  .bmr-cover-table th{width:100px;font-size:11px}
+  .bmr-cover-input{font-size:12px}
+  .bmr-cover-list li{font-size:11px}
+}
+
+/* Print: make cover page fields look like filled-in text, not inputs */
+@media print{
+  .bmr-cover-input{border-bottom:1px solid #888;background:transparent!important;padding:4px 6px}
+  .bmr-cover-extra-fields,.bmr-cover-actions{display:none!important}
+}
+
+/* ── BMR sub-page data tables ── */
+.bmr-data-table{width:100%;border-collapse:collapse;font-size:12px}
+.bmr-data-table th{background:#f5f5f5;border:1px solid #888;padding:7px 8px;font-size:11px;font-weight:700;color:#222;white-space:nowrap}
+.bmr-data-table td{border:1px solid #bbb;padding:0;vertical-align:middle}
+.bmr-table-input{display:block;width:100%;border:none;outline:none;padding:7px 8px;font-size:12px;background:transparent;color:#111;min-height:32px}
+.bmr-table-input:focus{background:#f9fdf9;outline:2px solid var(--green) inset}
+.bmr-table-input[type="date"]{padding:5px 8px}
+
+/* ── Manufacturing procedure textarea ── */
+.bmr-procedure-textarea{width:100%;border:1px solid #cbd6cc;border-radius:7px;padding:9px;font-size:12px;font-family:inherit;color:#111;resize:vertical;background:#fff}
+.bmr-procedure-textarea:focus{outline:2px solid var(--green);outline-offset:1px}
+
+/* ── Specimen area ── */
+.bmr-specimen-area{margin:16px 0;padding:18px;border:2px dashed #bbb;border-radius:10px;background:#fafafa;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* ── Certificate of Analysis signatures ── */
+.bmr-coa-signatures{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:20px 16px 10px;border-top:1px solid #888;margin-top:14px}
+
+/* ── Page 7 dotted fill-in lines ── */
+.bmr-p7-dotted-fields{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.bmr-dotted-line{display:flex;align-items:center;gap:10px;font-size:13px}
+.bmr-dotted-line span{white-space:nowrap;min-width:280px;color:#333}
+.bmr-dotted-input{flex:1;border:none;border-bottom:1px dotted #888;background:transparent;padding:4px 6px;font-size:13px;color:#111;outline:none}
+.bmr-dotted-input:focus{border-bottom-color:var(--green)}
+
+@media(max-width:760px){.bmr-coa-signatures{grid-template-columns:1fr}.bmr-dotted-line{flex-direction:column;align-items:flex-start}.bmr-dotted-line span{min-width:0}}
+
+/* ── Filling Record — Rejection Quantity ── */
+.bmr-rejection-section{margin-top:18px;padding:16px 18px;border:1.5px solid #e0a0a0;border-radius:10px;background:#fff8f8}
+.bmr-rejection-title{font-size:13px;font-weight:800;color:#a3332b;letter-spacing:.05em;text-transform:uppercase;margin-bottom:12px}
+.bmr-rejection-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:620px){.bmr-rejection-grid{grid-template-columns:1fr}}
+
+/* ══════════════════════════════════════════════
+   BMR Full Print Document  (bp- prefix)
+   Each .bp-page prints on its own A4 sheet.
+   All styles are scoped inside .bp-document.
+   ══════════════════════════════════════════════ */
+
+/* Screen: hide the print area completely */
+.production-print-area { display: none !important; }
+
+/* Print: show ONLY the print area */
+@media print {
+  html, body, #root { background: #fff !important; }
+  body * { visibility: hidden !important; }
+  .production-print-area,
+  .production-print-area * { visibility: visible !important; }
+  .production-print-area {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    background: #fff !important;
+  }
+  .production-print-sheet { display: block !important; }
+}
+
+/* Document wrapper */
+.bp-document {
+  display: block;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #111;
+  background: #fff;
+}
+
+/* Each page breaks onto its own A4 sheet */
+.bp-page {
+  width: 100%;
+  padding: 10mm 12mm;
+  box-sizing: border-box;
+  page-break-after: always;
+  break-after: page;
+}
+.bp-page:last-child { page-break-after: avoid; break-after: avoid; }
+
+/* ── Page header ── */
+.bp-header { border: 1px solid #555; margin-bottom: 0; }
+.bp-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  border-bottom: 1px solid #aaa;
+}
+.bp-company { display: flex; flex-direction: column; gap: 2px; }
+.bp-company b { font-size: 10pt; }
+.bp-company span { font-size: 9pt; color: #333; }
+.bp-logo-box {
+  font-size: 14pt;
+  font-weight: 900;
+  font-style: italic;
+  color: #1a5c35;
+  border: 1px solid #888;
+  padding: 3px 10px;
+  letter-spacing: .05em;
+}
+.bp-title {
+  text-align: center;
+  font-size: 11pt;
+  font-weight: 800;
+  padding: 5px;
+  border-bottom: 1px solid #555;
+  letter-spacing: .06em;
+}
+.bp-subtitle {
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 700;
+  padding: 4px;
+  border-bottom: 1px solid #555;
+  letter-spacing: .04em;
+}
+
+/* ── Fields table (top of each page) ── */
+.bp-fields-table { width: 100%; border-collapse: collapse; }
+.bp-fields-table th,
+.bp-fields-table td { border: 1px solid #888; padding: 4px 8px; font-size: 9.5pt; }
+.bp-fields-table th { background: #f5f5f5; font-weight: 700; width: 130px; white-space: nowrap; }
+
+/* ── Section headings ── */
+.bp-section-title {
+  text-align: center;
+  font-size: 10pt;
+  font-weight: 800;
+  text-decoration: underline;
+  margin: 10px 0 6px;
+  letter-spacing: .04em;
+}
+.bp-section-label { font-size: 9.5pt; font-weight: 700; margin: 8px 0 4px; }
+
+/* ── Numbered lists ── */
+.bp-list { margin: 0 0 6px 0; padding-left: 18px; }
+.bp-list li { font-size: 9pt; line-height: 1.5; margin-bottom: 2px; }
+.bp-procedure-list li { line-height: 1.6; margin-bottom: 6px; white-space: pre-wrap; }
+.bp-intro { font-size: 9pt; margin: 4px 0; color: #333; }
+.bp-note { font-size: 9pt; margin: 10px 0 0; }
+
+/* ── Data tables ── */
+.bp-data-table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+.bp-data-table th { border: 1px solid #888; background: #f0f0f0; padding: 5px 6px; font-weight: 700; text-align: center; }
+.bp-data-table td { border: 1px solid #bbb; padding: 5px 6px; min-height: 18px; }
+
+/* ── Signature table ── */
+.bp-signs-table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+.bp-signs-table th { border: 1px solid #888; padding: 6px; font-size: 9pt; text-align: center; background: #f5f5f5; width: 33.33%; }
+.bp-signs-table td { border: 1px solid #888; padding: 4px; font-size: 9pt; text-align: center; }
+.bp-sign-space td { height: 36px; }
+
+/* ── Filling record summary lines ── */
+.bp-fill-summary { margin: 8px 0; display: flex; flex-direction: column; gap: 4px; }
+.bp-fill-line { font-size: 9pt; margin: 4px 0; }
+.bp-dotted-val { display: inline-block; min-width: 100px; border-bottom: 1px dotted #888; padding-bottom: 1px; }
+
+/* ── Page 5: rejection box ── */
+.bp-rejection-box { margin: 10px 0; padding: 6px 8px; border: 1px solid #c88; background: #fff8f8; }
+
+/* ── Page 7: dotted fill-in lines ── */
+.bp-p7-lines { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+
+/* ── Page 8: specimen area ── */
+.bp-specimen-box {
+  margin: 12px 0;
+  border: 1px solid #888;
+  min-height: 160mm;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* ── Certificate of Analysis ── */
+.bp-coa-title {
+  text-align: center;
+  font-size: 12pt;
+  font-weight: 800;
+  letter-spacing: .08em;
+  padding: 8px;
+  border: 1px solid #555;
+  margin-bottom: 0;
+}
+.bp-coa-signs {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20mm;
+  padding: 0 10mm;
+}
+.bp-sign-line {
+  border-top: 1px solid #111;
+  width: 120px;
+  margin-bottom: 4px;
+}

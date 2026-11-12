@@ -1,0 +1,10 @@
+.inventory-page .inventory-attention strong { color: #a17a3c; }
+.inventory-attention strong small { color: #9b987f; font-family: "DM Sans", sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0; }
+.stock-value { color: #526f54; font-size: 11px; font-weight: 700; }
+.stock-value small { color: #8b9689; font-size: 9px; font-weight: 500; }
+.stock-value.stock-low { color: #a57b3d; }
+.inventory-footnote { display: flex; align-items: center; gap: 8px; margin-top: 13px; padding: 11px 13px; border: 1px solid #e8ede4; border-radius: 9px; color: #869184; background: #f8faf6; font-size: 10px; }
+.inventory-footnote > svg { color: #709072; }
+.inventory-footnote strong { color: #596a58; }
+.footnote-sync { display: flex; align-items: center; gap: 5px; margin-left: auto; color: #879889; font-size: 9px; white-space: nowrap; }
+@media (max-width: 760px) { .inventory-footnote { align-items: flex-start; flex-wrap: wrap; } .footnote-sync { width: 100%; margin-left: 23px; } }

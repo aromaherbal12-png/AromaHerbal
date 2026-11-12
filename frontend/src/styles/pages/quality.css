@@ -1,0 +1,29 @@
+.quality-icon { color: #758463; background: #f0f3e8; }
+.quality-page .table-strong { color: #465446; font-size: 10px; font-weight: 650; }
+.quality-action { color: #637f62; }
+.hold-label, .approved-label { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.hold-label { color: #a16e52; }
+.approved-label { color: #638267; }
+.quality-flow { margin: -4px 0 15px; padding: 15px 17px 13px; border: 1px solid #e7ece2; border-radius: 10px; background: linear-gradient(110deg, #f8faf5, #fff); }
+.quality-flow-title { display: flex; align-items: center; gap: 7px; color: #6c8069; }
+.quality-flow-title strong { color: #495d49; font-size: 11px; white-space: nowrap; }
+.quality-flow-title > span { margin-left: 5px; color: #8c9789; font-size: 9px; }
+.quality-flow-steps { display: flex; align-items: center; justify-content: space-between; gap: 9px; margin-top: 14px; padding-left: 1px; }
+.quality-flow-steps > span { display: flex; align-items: center; gap: 6px; color: #8b9589; font-size: 9px; white-space: nowrap; }
+.quality-flow-steps > span i { display: grid; width: 21px; height: 21px; place-items: center; border: 1px solid #e2e8df; border-radius: 50%; color: #859182; background: #fff; font-size: 9px; font-style: normal; }
+.quality-flow-steps > span.step-done i { border-color: #d6e4d2; color: #668567; background: #ecf3e8; }
+.quality-flow-steps > span.step-current { color: #506d52; font-weight: 650; }
+.quality-flow-steps > span.step-current i { border-color: #6f936f; color: white; background: #6f936f; }
+.quality-flow-steps > b { color: #c5cec1; font-size: 12px; font-weight: 400; }
+.quality-bottom-note { display: flex; align-items: center; gap: 8px; margin-top: 13px; color: #899386; font-size: 10px; }
+.quality-bottom-note > svg { color: #789078; }
+.quality-bottom-note button { display: flex; align-items: center; gap: 5px; margin-left: auto; padding: 5px; border: 0; color: #628066; background: transparent; font-size: 9px; font-weight: 600; white-space: nowrap; }
+@media (max-width: 760px) {
+  .quality-flow-title { align-items: flex-start; flex-wrap: wrap; }
+  .quality-flow-title > span { width: 100%; margin-left: 22px; line-height: 1.5; }
+  .quality-flow-steps { flex-wrap: wrap; justify-content: flex-start; }
+  .quality-flow-steps > b { display: none; }
+  .quality-flow-steps > span { padding-right: 12px; }
+  .quality-bottom-note { align-items: flex-start; flex-wrap: wrap; line-height: 1.5; }
+  .quality-bottom-note button { width: 100%; margin-left: 23px; }
+}

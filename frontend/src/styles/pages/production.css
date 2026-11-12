@@ -1,0 +1,38 @@
+.production-page .summary-chip strong small { color: #899488; font-family: "DM Sans", sans-serif; font-size: 10px; font-weight: 500; }
+.production-focus { display: grid; grid-template-columns: minmax(185px, .9fr) minmax(220px, 1.3fr) minmax(175px, .85fr); gap: 20px; align-items: center; margin: -4px 0 15px; padding: 16px; border: 1px solid #e4ebe1; border-radius: 11px; background: linear-gradient(110deg, #f7faf4, #fff); }
+.focus-title { display: flex; align-items: center; gap: 9px; }
+.focus-icon { display: grid; width: 35px; height: 35px; place-items: center; border-radius: 9px; color: #587b5d; background: #eaf1e7; }
+.focus-title strong, .focus-title small { display: block; }
+.focus-title strong { color: #435443; font-size: 11px; }
+.focus-title small { margin-top: 4px; color: #909a8e; font-size: 9px; }
+.focus-progress { padding: 0 19px; border-right: 1px solid #e7ece4; border-left: 1px solid #e7ece4; }
+.focus-progress > div:first-child { display: flex; align-items: center; justify-content: space-between; color: #849082; font-size: 9px; }
+.focus-progress strong { color: #466449; font-size: 14px; }
+.focus-progress strong small { color: #929c90; font-size: 9px; font-weight: 500; }
+.focus-track { overflow: hidden; height: 6px; margin: 8px 0 5px; border-radius: 10px; background: #e8eee5; }
+.focus-track i { display: block; height: 100%; border-radius: inherit; background: #709474; }
+.focus-progress > small { color: #9aa397; font-size: 9px; }
+.focus-machine { display: flex; align-items: center; gap: 8px; }
+.online-pulse { width: 8px; height: 8px; border-radius: 50%; background: #71a277; box-shadow: 0 0 0 4px #71a27721; }
+.focus-machine > span:nth-child(2) { flex: 1; }
+.focus-machine strong, .focus-machine small { display: block; }
+.focus-machine strong { color: #50614f; font-size: 10px; }
+.focus-machine small { margin-top: 4px; color: #90998e; font-size: 9px; white-space: nowrap; }
+.focus-machine button { display: inline-flex; align-items: center; gap: 4px; padding: 5px; border: 0; color: #638168; background: transparent; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.batch-icon { color: #648363; background: #ecf2e8; }
+.production-page .table-strong { color: #485448; font-size: 10px; font-weight: 650; }
+.table-progress { width: 126px; }
+.table-progress > div { display: flex; justify-content: space-between; gap: 6px; margin-bottom: 5px; color: #728070; font-size: 9px; }
+.table-progress b { color: #618166; font-size: 9px; }
+.table-progress > i { display: block; overflow: hidden; height: 4px; border-radius: 8px; background: #edf0ea; }
+.table-progress em { display: block; height: 100%; border-radius: inherit; background: #7e9d7c; }
+.batch-control { display: inline-flex; align-items: center; gap: 5px; padding: 6px 8px; border: 1px solid #e4ebe1; border-radius: 6px; background: white; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.batch-control.pause { color: #987c43; }
+.batch-control.resume { color: #658067; }
+.batch-control:hover { background: #f4f7f1; }
+.completed-control { color: #929b90; font-size: 9px; white-space: nowrap; }
+.production-help { display: flex; align-items: center; gap: 7px; margin-top: 13px; color: #8a9588; font-size: 9px; }
+.production-help > svg { color: #899782; }
+.production-help-end { display: flex; align-items: center; gap: 5px; margin-left: auto; color: #6c896e; font-weight: 600; white-space: nowrap; }
+@media (max-width: 900px) { .production-focus { grid-template-columns: 1fr 1.3fr; } .focus-machine { grid-column: 1 / -1; padding-top: 10px; border-top: 1px solid #e7ece4; } }
+@media (max-width: 520px) { .production-focus { grid-template-columns: 1fr; gap: 13px; } .focus-progress { padding: 12px 0; border-right: 0; border-left: 0; border-top: 1px solid #e7ece4; border-bottom: 1px solid #e7ece4; } .focus-machine { grid-column: auto; padding-top: 0; border-top: 0; } .production-help { align-items: flex-start; flex-wrap: wrap; line-height: 1.5; } .production-help-end { width: 100%; margin-left: 21px; } }

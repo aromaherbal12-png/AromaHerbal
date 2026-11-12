@@ -1,0 +1,125 @@
+/* A bolder botanical palette with stronger text, borders, and status colors. */
+:root {
+  color: #18251b;
+  background: #eef2ec;
+  --ink: #18251b;
+  --muted: #4e5d4f;
+  --line: #d5ded3;
+  --panel: #fff;
+  --canvas: #eef2ec;
+  --green: #315d39;
+  --green-dark: #21482c;
+  --green-soft: #dfeade;
+}
+
+body { color: #18251b; background: #eef2ec; }
+.sidebar { background: linear-gradient(160deg, #1e3826, #14281b); }
+.sidebar nav a { color: #e0e9dc; }
+.sidebar nav a:hover { color: #fff; background: #ffffff16; }
+.sidebar nav a.active { background: #3e7048; box-shadow: inset 3px 0 #d5e7ce; }
+.sidebar-note { border-color: #ffffff25; background: #ffffff0c; }
+.main-shell { background: #eef2ec; }
+.topbar { border-bottom-color: #d5ded3; background: #fff; }
+.global-search { border-color: #d8e1d6; color: #465647; background: #f0f4ee; }
+.global-search input::placeholder { color: #536354; }
+.topbar-notice, .icon-button { color: #3f5141; }
+.profile-copy strong { color: #253729; }
+.breadcrumbs { color: #4b594d; }
+.breadcrumbs strong { color: #1f3023; }
+
+.page-heading h1 { color: #18281c; }
+.page-heading p { color: #475649; }
+.eyebrow { color: #4b624b; }
+.metric-card, .dashboard-panel, .panel-card, .table-panel, .summary-chip {
+  border-color: #d5ded3;
+  box-shadow: 0 2px 7px #2035230a;
+}
+.metric-card { background: linear-gradient(145deg, #fff, #f8fbf6); }
+.metric-label, .metric-note { color: #465548; }
+.metric-value { color: #18291d; }
+.metric-icon.tone-green { color: #2e6138; background: #dcebdc; }
+.metric-icon.tone-sage { color: #4d704d; background: #e7efdc; }
+.metric-icon.tone-blue { color: #456d84; background: #e2edf2; }
+.metric-icon.tone-amber { color: #896719; background: #f5edce; }
+.trend, .trend-down { color: #376b3d; }
+.panel-heading h2 { color: #263b2a; }
+.panel-heading p { color: #536253; }
+.subtle-link, .reorder-link { color: #315d39; }
+.data-table th { color: #2e4231; background: #edf3eb; }
+.data-table td { color: #29382b; }
+.data-table tbody tr:hover { background: #f4f8f2; }
+.primary-cell { color: #203324; }
+.primary-cell small { color: #526253; }
+.table-search { border-color: #d7e0d4; color: #4b5e4d; background: #f7f9f5; }
+.table-search input::placeholder { color: #59685b; opacity: 1; }
+.table-toolbar select { border-color: #d5ded3; color: #354637; }
+.filter-count, .table-pagination { color: #465447; }
+.table-pagination strong { color: #1e3022; }
+.summary-chip span { color: #4b5c4c; }
+.summary-chip strong { color: #1f3323; }
+
+.status-badge { font-weight: 700; }
+.status-in-progress, .status-active, .status-approved, .status-received, .status-in-stock, .status-completed {
+  color: #24582e;
+  background: #dceedd;
+}
+.status-quality-check, .status-under-test, .status-awaiting-approval, .status-awaiting-delivery {
+  color: #72540d;
+  background: #f4edcf;
+}
+.status-low-stock, .status-on-hold, .status-rejected {
+  color: #873c26;
+  background: #f6e2d9;
+}
+.status-paused { color: #414c42; background: #e6eae4; }
+.row-action, .batch-control, .member-toggle { border-color: #cbd8c8; background: #f7faf5; }
+.row-action, .batch-control.resume, .member-toggle, .member-toggle.member-enabled { color: #284e30; }
+.primary-button { border-color: #2d5836; background: #315d39; }
+.primary-button:hover { background: #234a2e; }
+.secondary-button { border-color: #cbd7c9; color: #344638; }
+.cell-icon, .team-person > span:first-child { color: #315d39; background: #e1eddf; }
+.team-person strong { color: #18281c; }
+.team-person small, .role-label { color: #354638; }
+.team-rbac-hint, .soft-callout, .inventory-footnote, .production-help, .quality-bottom-note, .report-disclaimer {
+  border-color: #d5e0d1;
+  color: #445546;
+  background: #f0f5ed;
+}
+
+.chart-axis, .chart-day > small, .bar-group, .report-toolbar small,
+.focus-title small, .focus-progress > small, .focus-machine small,
+.batch-copy > span, .batch-copy > small, .alert-copy small, .alert-stock small,
+.report-notes small, .permissions-foot, .sidebar-bottom small, .profile-copy small {
+  color: #536254;
+}
+.chart-plot { background: repeating-linear-gradient(to bottom, #dfe7dd 0 1px, transparent 1px 35px); }
+.chart-bar { background: linear-gradient(180deg, #80a77e, #c2d7b9); }
+.chart-day.today .chart-bar, .batch-progress-track i, .focus-track i { background: #47774c; }
+.report-actual-swatch, .actual-bar, .line-list > div > i b { background: #47774c; }
+.target-line { border-top-color: #b39d50; }
+.online-pulse, .online-dot { background: #76b16c; }
+
+.team-table-panel .data-table th { color: #233627; }
+.team-table-panel .data-table td { color: #202f23; }
+.team-person small { color: #465648; }
+.role-label { color: #25392a; }
+.team-table-panel .status-active { color: #20562d; }
+.team-table-panel .table-search input::placeholder { color: #4a5d4c; }
+.team-table-panel .table-pagination { color: #3d4e3f; }
+
+.stat-card > small, .chart-legend, .chart-axis, .chart-day > small,
+.output-legend strong small, .bar-group, .panel-note,
+.shift-progress-top > span, .shift-progress-top > strong small,
+.shift-progress-foot, .shift-stat-row small, .shift-quality small,
+.batch-copy > span, .batch-copy > small,
+.alert-copy small, .alert-stock small, .reorder-link,
+.report-chart-caption, .report-legend, .quality-legend span small,
+.line-list > div > span small, .report-notes small,
+.inventory-footnote, .production-help, .quality-bottom-note {
+  color: #4b594c;
+}
+
+@media (prefers-contrast: more) {
+  :root { --line: #aebbaa; }
+  .data-table td, .page-heading p, .panel-heading p { color: #17251a; }
+}

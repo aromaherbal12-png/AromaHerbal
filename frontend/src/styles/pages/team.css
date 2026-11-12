@@ -1,0 +1,30 @@
+.team-page .summary-strip { grid-template-columns: repeat(4, 1fr); }
+.team-table-panel { margin-bottom: 14px; }
+.team-person { display: flex; align-items: center; gap: 8px; }
+.team-person > span:first-child { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; color: #59755a; background: #eaf1e8; font-size: 9px; font-weight: 700; }
+.team-person strong, .team-person small { display: block; }
+.team-person strong { color: #435044; font-size: 10px; font-weight: 650; }
+.team-person small { margin-top: 3px; color: #929b90; font-size: 9px; }
+.role-label { display: inline-flex; align-items: center; gap: 5px; color: #667563; font-size: 10px; }
+.role-label svg { color: #81947b; }
+.member-toggle { padding: 6px 8px; border: 1px solid #e9ede7; border-radius: 6px; color: #829080; background: #fff; font-size: 9px; font-weight: 600; white-space: nowrap; }
+.member-toggle:hover { color: #566c57; background: #f5f8f2; }
+.member-toggle.member-enabled { color: #70866e; }
+.permissions-panel { overflow: hidden; }
+.permissions-panel .panel-heading { padding: 16px 17px 12px; }
+.permissions-lock { display: flex; align-items: center; gap: 5px; padding: 5px 7px; border: 1px solid #e6ece1; border-radius: 7px; color: #71856d; background: #f8faf6; font-size: 9px; font-weight: 650; }
+.permission-scroll { overflow-x: auto; }
+.permission-table { width: 100%; border-collapse: collapse; text-align: center; }
+.permission-table th, .permission-table td { height: 34px; padding: 5px 9px; border-top: 1px solid #eff1ed; }
+.permission-table thead th { color: #7c897a; background: #f8faf7; font-size: 9px; font-weight: 700; white-space: nowrap; }
+.permission-table thead th:first-child { width: 150px; text-align: left; }
+.permission-table tbody th { color: #5a6859; text-align: left; font-size: 9px; font-weight: 550; white-space: nowrap; }
+.permission-yes { display: inline-grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; color: #69896a; background: #edf4eb; }
+.permission-no { color: #c6cdc3; font-size: 13px; }
+.permissions-foot { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-top: 1px solid #eef1ec; color: #8b9688; background: #fbfcfa; font-size: 9px; line-height: 1.4; }
+.permissions-foot svg { flex: 0 0 auto; color: #82957e; }
+.permissions-foot svg:last-child { margin-left: auto; }
+.team-rbac-hint { display: flex; align-items: center; gap: 8px; margin-top: 13px; padding: 11px 13px; border: 1px solid #e8ede4; border-radius: 9px; color: #7c897a; background: #f6f8f3; font-size: 10px; }
+.team-rbac-hint > svg { color: #748e72; }
+.team-rbac-hint strong { color: #536953; }
+@media (max-width: 760px) { .team-page .summary-strip { grid-template-columns: repeat(2, 1fr); } .team-rbac-hint { align-items: flex-start; line-height: 1.5; } }

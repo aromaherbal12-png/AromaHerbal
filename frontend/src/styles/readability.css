@@ -1,0 +1,41 @@
+/* Keep secondary labels readable while retaining the page color accents. */
+.eyebrow { color: #637261; }
+.page-heading p { color: #5e695d; }
+.metric-label, .metric-note { color: #5d695d; }
+.panel-heading p, .muted { color: #657164; }
+.data-table th { color: #586656; }
+.data-table td { color: #4f5c50; }
+.table-pagination, .filter-count { color: #5f6b5d; }
+.primary-cell small { color: #657164; }
+.chart-axis, .chart-day > small { color: #697567; }
+.batch-copy > span, .batch-copy > small,
+.alert-copy small, .alert-stock small,
+.report-notes small, .inventory-footnote,
+.permissions-foot, .team-rbac-hint,
+.quality-bottom-note, .production-help,
+.report-disclaimer { color: #5e6b5d; }
+.report-toolbar small, .focus-title small,
+.focus-progress > small, .focus-machine small { color: #647161; }
+.breadcrumbs { color: #626f60; }
+.profile-copy small { color: #647161; }
+.global-search { color: #596657; }
+.global-search input::placeholder { color: #677364; }
+.workspace-footer { color: #687466; }
+.sidebar nav a { color: #d7e1d3; }
+.sidebar-note span, .sidebar-bottom small { color: #bacab5; }
+.brand-caption { white-space: nowrap; letter-spacing: .8px; }
+
+/* Stronger contrast for the team table's names, roles, and access details. */
+.team-table-panel .table-search input::placeholder { color: #4d5b4e; opacity: 1; }
+.team-table-panel .filter-count,
+.team-table-panel .data-table th { color: #354337; }
+.team-table-panel .data-table td { color: #303d32; }
+.team-person strong { color: #253329; }
+.team-person small { color: #566456; }
+.role-label { color: #344438; }
+.role-label svg { color: #506a53; }
+.team-table-panel .status-active { color: #355e3c; }
+.member-toggle { color: #405240; }
+.member-toggle.member-enabled { color: #3e603f; }
+.team-table-panel .table-pagination { color: #465447; }
+.team-table-panel .table-pagination strong { color: #28382b; }
