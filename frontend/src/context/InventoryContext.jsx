@@ -200,7 +200,7 @@ export function InventoryProvider({ children }) {
       setGoodsReceipts(prev => prev.map(grn => grn._id === id ? updated : grn));
       
       // Refresh stock balances when GRN is approved/rejected
-      if (["Approved", "Partially Approved", "Rejected"].includes(status)) {
+      if (["Approved", "Rejected"].includes(status)) {
         await fetchStockBalances();
       }
       

@@ -39,11 +39,14 @@ export default function DispatchForm({ user }) {
   const loadData = async () => {
     setLoading(true);
     try {
+      // Fetch all finished goods (all statuses) and all dispatches
       const [lotsRes, dispatchesRes] = await Promise.all([
-        api.get("/finished-goods?status=Available"),
-        api.get("/dispatch?limit=50"),
+        api.get("/finished-goods"),
+        api.get("/dispatch?limit=200"),
       ]);
-      setAvailableLots(Array.isArray(lotsRes) ? lotsRes : []);
+      // Backend returns data array directly via api helper
+      const allLots = Array.isArray(lotsRes) ? lotsRes : [];
+      setAvailableLots(allLots.filter(l => l.status === "Available" && (l.availableQuantity || 0) > 0));
       setDispatches(Array.isArray(dispatchesRes) ? dispatchesRes : []);
     } catch {
       setMessage("Failed to load data. Please try again.");

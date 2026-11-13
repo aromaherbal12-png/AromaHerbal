@@ -46,27 +46,26 @@ function mapGRNStatus(status) {
     "QC Pending": "Under Testing",
     "QC Completed": "Approved",
     Approved: "Approved",
-    "Partially Approved": "Approved",
     Rejected: "Rejected",
   };
   return map[status] || status;
 }
 
 function mapInventoryStatus(status) {
-  if (["Approved", "Partially Approved", "QC Completed"].includes(status)) return "In Stock";
+  if (["Approved", "QC Completed"].includes(status)) return "In Stock";
   if (status === "Rejected") return "Restricted";
   return "Pending QC";
 }
 
 function mapPO(item) {
   return {
-    id: item._id,
+    id: item.poNumber || item._id,   // display-friendly PO number
     _id: item._id,
     poNumber: item.poNumber,
     supplier: item.supplierName || "",
     status: item.status,
     orderType: "Purchase Order",
-    grandTotal: item.subtotal || 0,
+    grandTotal: (item.subtotal || 0) + (item.shippingCharges || 0),
     items: (item.items || []).map(i => ({
       id: i._id,
       description: i.materialName || "",

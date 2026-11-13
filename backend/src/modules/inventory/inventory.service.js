@@ -391,7 +391,9 @@ export async function createGoodsReceipt(data, actorId) {
         quarantinedAt: quarantinedAt,
         quarantinedBy: quarantinedBy,
         notes: data.notes || "", 
-        receivedBy: actorId 
+        receivedBy: actorId,
+        createdBy: actorId,
+        updatedBy: actorId,
       }], { session });
       
       createdReceipt = receipt;
@@ -636,6 +638,8 @@ export async function changeGRNStatus(id, newStatus, actorId) {
             remarks: `QC Approved — GRN ${grn.grnNumber}, sticker ${grn.approvedSticker}`,
             performedBy: actorId,
             transactionDate: new Date(),
+            createdBy: actorId,
+            updatedBy: actorId,
           }));
           await StockTransaction.insertMany(transactions, { session });
           break;
@@ -695,6 +699,8 @@ export async function changeGRNStatus(id, newStatus, actorId) {
             remarks: `QC Rejected — GRN ${grn.grnNumber}`,
             performedBy: actorId,
             transactionDate: new Date(),
+            createdBy: actorId,
+            updatedBy: actorId,
           }));
           await StockTransaction.insertMany(rejTxns, { session });
           break;
@@ -859,7 +865,7 @@ export async function issueMaterialsToProduction(data, actorId) {
         const previouslyIssued = movements.find((m) => m._id === STOCK_TRANSACTION_TYPE.PRODUCTION_ISSUE)?.quantity || 0;
         const available = accepted - previouslyIssued;
         if (item.quantity > available + 1e-9) throw new ApiError(409, `Insufficient usable stock for ${material.materialCode}. Available: ${Math.max(0, available)} ${material.unit}.`);
-        issued.push({ transactionNumber: `STK-${Date.now()}-${randomUUID().slice(0, 8).toUpperCase()}`, material: material._id, materialCode: material.materialCode, materialName: material.name, transactionType: STOCK_TRANSACTION_TYPE.PRODUCTION_ISSUE, quantity: item.quantity, unit: material.unit, productionBatch: productionBatch._id, batchNumber: item.batchNumber || "", stockBucket: "Usable", remarks: [`Issued to production batch ${productionBatch.batchNumber || productionBatch._id}`, item.remarks, data.remarks].filter(Boolean).join(" | "), performedBy: actorId, transactionDate: new Date() });
+        issued.push({ transactionNumber: `STK-${Date.now()}-${randomUUID().slice(0, 8).toUpperCase()}`, material: material._id, materialCode: material.materialCode, materialName: material.name, transactionType: STOCK_TRANSACTION_TYPE.PRODUCTION_ISSUE, quantity: item.quantity, unit: material.unit, productionBatch: productionBatch._id, batchNumber: item.batchNumber || "", stockBucket: "Usable", remarks: [`Issued to production batch ${productionBatch.batchNumber || productionBatch._id}`, item.remarks, data.remarks].filter(Boolean).join(" | "), performedBy: actorId, transactionDate: new Date(), createdBy: actorId, updatedBy: actorId });
       }
       createdTransactions = await StockTransaction.insertMany(issued, { session });
     });
@@ -975,6 +981,8 @@ export async function manualIssue(items, remarks, actorId) {
           remarks:           [item.remarks, remarks].filter(Boolean).join(" | ") || "Manual issue from production",
           performedBy:       actorId,
           transactionDate:   new Date(),
+          createdBy:         actorId,
+          updatedBy:         actorId,
         });
       }
       created = await StockTransaction.insertMany(transactions, { session });

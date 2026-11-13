@@ -7,7 +7,6 @@ export const GOODS_RECEIPT_STATUS = Object.freeze({
   QUARANTINED: "Quarantined",
   UNDER_TESTING: "Under Testing",
   APPROVED: "Approved",
-  PARTIALLY_APPROVED: "Partially Approved",
   REJECTED: "Rejected",
   // Legacy statuses (kept for backward compatibility with old GRNs)
   RECEIVED: "Received",

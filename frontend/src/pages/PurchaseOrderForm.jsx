@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
-import { useGRNs } from "../context/GRNContext.jsx";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import api from "../services/api.js";
 
 // ─── constants ────────────────────────────────────────────────────────────────
@@ -44,7 +43,18 @@ const toISODateTime = (dateStr) => {
 
 // ─── main component ───────────────────────────────────────────────────────────
 export default function PurchaseOrderForm({ user }) {
-  const { purchaseOrders, reload } = useGRNs();
+
+  // ── local PO register state (owns its own fetch) ──
+  const [purchaseOrders, setPurchaseOrderList] = useState([]);
+
+  const loadPORegister = useCallback(async () => {
+    try {
+      const res = await api.get("/inventory/purchase-orders?limit=200");
+      setPurchaseOrderList(res.items || []);
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => { loadPORegister(); }, [loadPORegister]);
 
   // ── PO form state ──
   const [stage, setStage]           = useState("products");
@@ -90,22 +100,22 @@ export default function PurchaseOrderForm({ user }) {
   const draftValid = draft.description.trim() && draft.particulars.trim() && Number(draft.quantity) > 0 && draft.unit.trim() && Number(draft.rate) >= 0 && Number(draft.gstRate) >= 0;
 
   // ── load GRN data ──
-  useEffect(() => { loadBackendPOs(); loadGRNs(); }, []);
+  useEffect(() => { loadBackendPOs(); loadGRNs(); loadPORegister(); }, [loadPORegister]);
 
   const loadBackendPOs = async () => {
     try {
-      const data = await api.get("/inventory/purchase-orders");
-      setBackendPOs((data.purchaseOrders || []).filter(po =>
-        po.status === "Draft" || po.status === "Approved" || po.status === "Partially Received"
+      const data = await api.get("/inventory/purchase-orders?limit=500");
+      // Keep all statuses that can still receive goods (Approved or Partially Received)
+      setBackendPOs((data.items || []).filter(po =>
+        po.status === "Approved" || po.status === "Partially Received"
       ));
     } catch { setBackendPOs([]); }
   };
 
   const loadGRNs = async () => {
     try {
-      const data = await api.get("/inventory/goods-receipts");
-      // API returns { items, pagination } — not { goodsReceipts }
-      setBackendGRNs(data.items || data.goodsReceipts || []);
+      const data = await api.get("/inventory/goods-receipts?limit=500");
+      setBackendGRNs(data.items || []);
     } catch { /* ignore */ }
   };
 
@@ -203,9 +213,9 @@ export default function PurchaseOrderForm({ user }) {
       setPoMessage("Approving purchase order...");
       await api.patch(`/inventory/purchase-orders/${backendPO._id}/approve`);
 
-      // Refresh PO register from backend
-      await reload.purchaseOrders();
       setSavedPO({ id: backendPO.poNumber, status: "Approved", items });
+      // Reload the local PO register
+      await loadPORegister();
       setPoMessage(`✅ ${backendPO.poNumber} created and approved! Print the PO, then use the GRN section below.`);
 
       // immediately add new PO to GRN dropdown
@@ -332,9 +342,14 @@ export default function PurchaseOrderForm({ user }) {
       await loadBackendPOs();
       resetGRNForm();
     } catch (err) {
+      const details = err.data?.details;
       let msg = err.data?.message || err.message || "Failed to save GRN";
-      if (err.data?.details) msg += ": " + err.data.details.map(d => `${d.field} - ${d.message}`).join(", ");
-      setGrnMessage(msg);
+      if (details && Array.isArray(details) && details.length > 0) {
+        msg += ": " + details.map(d => `${d.field} → ${d.message}`).join(" | ");
+      } else if (err.data?.debugMessage) {
+        msg += ` (${err.data.debugMessage})`;
+      }
+      setGrnMessage("❌ " + msg);
     } finally { setGrnLoading(false); }
   };
 
@@ -689,16 +704,15 @@ export default function PurchaseOrderForm({ user }) {
         {purchaseOrders.length ? (
           <div className="table-wrap">
             <table>
-              <thead><tr><th>PO Number</th><th>Type</th><th>Supplier</th><th>Expected Date</th><th>Products</th><th>Order Total</th><th>Status</th></tr></thead>
+              <thead><tr><th>PO Number</th><th>Supplier</th><th>Expected Date</th><th>Items</th><th>Order Total</th><th>Status</th></tr></thead>
               <tbody>
                 {purchaseOrders.map(order => (
-                  <tr key={order.id} onClick={() => setSelectedPOForTracking(selectedPOForTracking?.id === order.id ? null : order)} style={{ cursor: "pointer" }}>
-                    <td><b>{order.id}</b></td>
-                    <td>{order.orderType}</td>
-                    <td>{order.supplier}</td>
-                    <td>{formatDate(order.expectedDate)}</td>
-                    <td>{(order.items || []).map(i => `${i.description}`).join(", ")}</td>
-                    <td>₹ {formatMoney(order.grandTotal)}</td>
+                  <tr key={order._id} onClick={() => setSelectedPOForTracking(selectedPOForTracking?._id === order._id ? null : order)} style={{ cursor: "pointer" }}>
+                    <td><b>{order.poNumber}</b></td>
+                    <td>{order.supplierName || "—"}</td>
+                    <td>{order.expectedDeliveryDate ? formatDate(new Date(order.expectedDeliveryDate).toISOString().slice(0,10)) : "—"}</td>
+                    <td>{(order.items || []).map(i => i.materialName || i.description || "").join(", ")}</td>
+                    <td>₹ {formatMoney(order.subtotal || 0)}</td>
                     <td><StatusBadge value={order.status} /></td>
                   </tr>
                 ))}
@@ -813,7 +827,6 @@ function Field({ label, value, onChange, type = "text", required = false, ...pro
 function StatusBadge({ value }) {
   const map = {
     "Approved":           { bg: "#e6f2e7", color: "#27603b" },
-    "Partially Approved": { bg: "#fff8e1", color: "#795914" },
     "Rejected":           { bg: "#fae7e5", color: "#a3332b" },
     "Quarantined":        { bg: "#fff0d1", color: "#795914" },
     "Under Testing":      { bg: "#fff8e1", color: "#795914" },

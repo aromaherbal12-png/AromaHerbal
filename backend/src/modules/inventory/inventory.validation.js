@@ -76,7 +76,7 @@ export const listInventorySchema = z.object({
     search: z.string().trim().max(100).optional(),
     active: z.enum(["true", "false"]).optional(),
     page: z.coerce.number().int().min(1).default(1),
-    limit: z.coerce.number().int().min(1).max(100).default(20),
+    limit: z.coerce.number().int().min(1).max(500).default(20),
   }),
 });
 
@@ -115,7 +115,7 @@ export const listPurchaseOrdersSchema = z.object({
     supplierId: objectId.optional(),
     search: z.string().trim().max(100).optional(),
     page: z.coerce.number().int().min(1).default(1),
-    limit: z.coerce.number().int().min(1).max(100).default(20),
+    limit: z.coerce.number().int().min(1).max(500).default(20),
   }),
 });
 
@@ -199,7 +199,7 @@ export const listGoodsReceiptsSchema = z.object({
       .regex(/^[a-f\d]{24}$/i)
       .optional(),
     page: z.coerce.number().int().min(1).optional().default(1),
-    limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+    limit: z.coerce.number().int().min(1).max(500).optional().default(20),
   }),
 });
 
@@ -234,7 +234,7 @@ export const stockTransactionQuerySchema = z.object({
       .optional(),
     search: z.string().trim().optional().default(""),
     page: z.coerce.number().int().min(1).optional().default(1),
-    limit: z.coerce.number().int().min(1).max(100).optional().default(20),
+    limit: z.coerce.number().int().min(1).max(500).optional().default(20),
   }),
 });
 
@@ -290,3 +290,5 @@ export const manualIssueSchema = z.object({
     }
   }),
 });
+
+

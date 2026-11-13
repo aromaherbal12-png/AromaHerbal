@@ -4,12 +4,11 @@ import QualitySticker from "./QualitySticker.jsx";
 
 // Status-to-badge colour map
 const BADGE_STYLES = {
-  "Quarantined":        { bg: "#fff0d1", color: "#795914" },
-  "Under Testing":      { bg: "#fff8e1", color: "#795914" },
-  "Approved":           { bg: "#e6f2e7", color: "#27603b" },
-  "Partially Approved": { bg: "#e8f4fd", color: "#1a5c8c" },
-  "Rejected":           { bg: "#fae7e5", color: "#a3332b" },
-  "Pending":            { bg: "#f0f1ef", color: "#5a625c" },
+  "Quarantined":   { bg: "#fff0d1", color: "#795914" },
+  "Under Testing": { bg: "#fff8e1", color: "#795914" },
+  "Approved":      { bg: "#e6f2e7", color: "#27603b" },
+  "Rejected":      { bg: "#fae7e5", color: "#a3332b" },
+  "Pending":       { bg: "#f0f1ef", color: "#5a625c" },
 };
 const Badge = ({ value }) => {
   const s = BADGE_STYLES[value] || { bg: "#f0f1ef", color: "#5a625c" };
@@ -20,26 +19,22 @@ const Badge = ({ value }) => {
   );
 };
 
-// The status decisions the QC Incharge can push a GRN to from Quarantined / Under Testing
+// Three decisions
 const DECISIONS = [
-  { value: "Under Testing", label: "◷ Send to Under Testing",  description: "Keep material quarantined and start lab tests." },
-  { value: "Approved",       label: "✓ Approve All & Add to Inventory", description: "Mark all items Accepted and add stock to inventory." },
-  { value: "Partially Approved", label: "~ Partially Approve", description: "Some items accepted, some rejected." },
-  { value: "Rejected",       label: "✕ Reject All",            description: "Mark all items Rejected. Stock will not enter inventory." },
+  { value: "Under Testing", label: "◷ Send to Under Testing",         description: "Keep material quarantined and start lab tests." },
+  { value: "Approved",      label: "✓ Approve & Add to Inventory",    description: "Mark all items Accepted and add stock to inventory." },
+  { value: "Rejected",      label: "✕ Reject All",                    description: "Mark all items Rejected. Stock will not enter inventory." },
 ];
 
 export default function QualityInspections({ user }) {
-  const [grns, setGrns]             = useState([]);
-  const [loading, setLoading]       = useState(false);
+  const [grns, setGrns]               = useState([]);
+  const [loading, setLoading]         = useState(false);
   const [selectedGRN, setSelectedGRN] = useState(null);
-  const [decision, setDecision]     = useState("");
-  const [message, setMessage]       = useState("");
+  const [decision, setDecision]       = useState("");
+  const [message, setMessage]         = useState("");
   const [lastApproval, setLastApproval] = useState(null);
-  const [saving, setSaving]         = useState(false);
-  const [toast, setToast]           = useState(null); // { text, type }
-
-  // item-level accepted/rejected toggles for Partially Approve
-  const [itemDecisions, setItemDecisions] = useState({});  // { [itemId]: "Accepted"|"Rejected" }
+  const [saving, setSaving]           = useState(false);
+  const [toast, setToast]             = useState(null);
 
   useEffect(() => { loadGRNs(); }, []);
 
@@ -51,18 +46,14 @@ export default function QualityInspections({ user }) {
   const loadGRNs = async () => {
     setLoading(true);
     try {
-      // Fetch GRNs that need QC attention
-      const [quarantined, underTesting, partiallyApproved] = await Promise.all([
+      const [quarantined, underTesting] = await Promise.all([
         api.get("/inventory/goods-receipts?status=Quarantined"),
         api.get("/inventory/goods-receipts?status=Under+Testing"),
-        api.get("/inventory/goods-receipts?status=Partially+Approved"),
       ]);
-      const all = [
+      setGrns([
         ...(quarantined.items || []),
         ...(underTesting.items || []),
-        ...(partiallyApproved.items || []),
-      ];
-      setGrns(all);
+      ]);
     } catch (err) {
       setMessage("Failed to load GRNs: " + (err.message || "unknown error"));
     } finally {
@@ -75,75 +66,56 @@ export default function QualityInspections({ user }) {
     setDecision("");
     setMessage("");
     setLastApproval(null);
-    // Default all items to Accepted for convenience
-    const defaults = {};
-    (grn.items || []).forEach(item => { defaults[item._id] = "Accepted"; });
-    setItemDecisions(defaults);
   };
 
   const chooseDecision = (value) => {
     setDecision(value);
     setMessage("");
     setLastApproval(null);
-    // When rejecting all, flip all to Rejected
-    if (value === "Rejected") {
-      const all = {};
-      (selectedGRN?.items || []).forEach(item => { all[item._id] = "Rejected"; });
-      setItemDecisions(all);
-    } else {
-      const all = {};
-      (selectedGRN?.items || []).forEach(item => { all[item._id] = "Accepted"; });
-      setItemDecisions(all);
-    }
   };
 
-  // Mark all items with their chosen status then change the GRN status
   const applyDecision = async () => {
     if (!selectedGRN || !decision) return;
     setSaving(true);
     try {
-      // Step 1: Mark each item's qualityStatus on the backend
-      const itemStatusMap = {
-        "Approved":           () => Object.fromEntries((selectedGRN.items || []).map(i => [i._id, "Accepted"])),
-        "Rejected":           () => Object.fromEntries((selectedGRN.items || []).map(i => [i._id, "Rejected"])),
-        "Partially Approved": () => itemDecisions,
-        "Under Testing":      () => null,  // no per-item status change needed
-      };
-      const statusMap = itemStatusMap[decision]?.();
-
-      if (statusMap) {
-        for (const [itemId, qualityStatus] of Object.entries(statusMap)) {
-          await api.patch(`/inventory/goods-receipts/${selectedGRN._id}/items/${itemId}/status`, { qualityStatus });
+      // Step 1: Mark every item Accepted or Rejected based on decision
+      const qualityStatus = decision === "Approved" ? "Accepted" : decision === "Rejected" ? "Rejected" : null;
+      if (qualityStatus) {
+        for (const item of (selectedGRN.items || [])) {
+          await api.patch(
+            `/inventory/goods-receipts/${selectedGRN._id}/items/${item._id}/status`,
+            { qualityStatus }
+          );
         }
       }
 
-      // Step 2: Change the GRN status
-      const updated = await api.patch(`/inventory/goods-receipts/${selectedGRN._id}/status`, { status: decision });
+      // Step 2: Change GRN status
+      const updated = await api.patch(
+        `/inventory/goods-receipts/${selectedGRN._id}/status`,
+        { status: decision }
+      );
 
       // Record outcome for confirmation card
-      if (decision === "Approved" || decision === "Partially Approved") {
+      if (decision === "Approved") {
         setLastApproval({
-          grnNumber: updated.grnNumber,
-          poNumber:  updated.purchaseOrder?.poNumber || updated.poNumber || "",
+          grnNumber:       updated.grnNumber,
+          poNumber:        updated.purchaseOrder?.poNumber || updated.poNumber || "",
           approvedSticker: updated.approvedSticker,
-          itemCount: (updated.items || []).length,
-          approvedBy: user?.name || "",
-          approvedDate: new Date().toLocaleDateString("en-IN"),
+          itemCount:       (updated.items || []).length,
+          approvedBy:      user?.name || "",
+          approvedDate:    new Date().toLocaleDateString("en-IN"),
         });
       }
 
       setMessage(
         decision === "Approved"
           ? `✅ GRN ${updated.grnNumber} approved! Sticker ${updated.approvedSticker} generated. Items added to inventory.`
-          : decision === "Partially Approved"
-          ? `✅ GRN ${updated.grnNumber} partially approved (sticker ${updated.approvedSticker}). Accepted items added to inventory.`
           : decision === "Rejected"
           ? `GRN ${updated.grnNumber} marked Rejected.`
           : `GRN ${updated.grnNumber} moved to Under Testing.`
       );
 
-      // Show a persistent toast so the confirmation is visible after the sticker popup opens
-      if (decision === "Approved" || decision === "Partially Approved") {
+      if (decision === "Approved") {
         showToast(`✅ ${updated.grnNumber} approved and added to inventory. Sticker: ${updated.approvedSticker}`, "success");
       } else if (decision === "Rejected") {
         showToast(`${updated.grnNumber} marked as Rejected.`, "neutral");
@@ -151,7 +123,6 @@ export default function QualityInspections({ user }) {
         showToast(`${updated.grnNumber} moved to Under Testing.`, "neutral");
       }
 
-      // Clear selection and refresh the queue
       setSelectedGRN(null);
       setDecision("");
       await loadGRNs();
@@ -164,27 +135,21 @@ export default function QualityInspections({ user }) {
     }
   };
 
-  // Sticker print wrapper — called by QualitySticker after the user fills in sticker fields.
-  // Persists the decision to the backend first, then lets the popup sticker print.
-  // After backend save completes, the queue is refreshed and a success toast is shown.
-  const saveAndPrint = async ({ stickerType }) => {
+  const saveAndPrint = async () => {
     if (!selectedGRN) return;
     await applyDecision();
-    // The popup sticker print is handled entirely inside QualitySticker — no window.print() here.
-    // applyDecision already calls loadGRNs() so the queue updates automatically.
   };
 
-  // Build a flat grn shape for QualitySticker (it expects old single-item shape)
   const stickerGRN = selectedGRN ? {
-    id: selectedGRN.grnNumber,
-    material: (selectedGRN.items || []).map(i => i.materialName).join(", "),
-    receivedQty: (selectedGRN.items || []).reduce((s, i) => s + (Number(i.receivedQty) || 0), 0),
-    unit: (selectedGRN.items?.[0]?.unit) || "",
-    supplier: selectedGRN.purchaseOrder?.supplier?.name || selectedGRN.supplierName || "",
-    batchNo: (selectedGRN.items || []).map(i => i.batchNumber).filter(Boolean).join(", "),
-    receivedDate: selectedGRN.items?.[0]?.receivedDate
-      ? new Date(selectedGRN.items[0].receivedDate).toISOString().slice(0, 10)
-      : new Date().toISOString().slice(0, 10),
+    id:               selectedGRN.grnNumber,
+    material:         (selectedGRN.items || []).map(i => i.materialName).join(", "),
+    receivedQty:      (selectedGRN.items || []).reduce((s, i) => s + (Number(i.receivedQty) || 0), 0),
+    unit:             selectedGRN.items?.[0]?.unit || "",
+    supplier:         selectedGRN.purchaseOrder?.supplier?.name || selectedGRN.supplierName || "",
+    batchNo:          (selectedGRN.items || []).map(i => i.batchNumber).filter(Boolean).join(", "),
+    receivedDate:     selectedGRN.items?.[0]?.receivedDate
+                        ? new Date(selectedGRN.items[0].receivedDate).toISOString().slice(0, 10)
+                        : new Date().toISOString().slice(0, 10),
     quarantineSticker: selectedGRN.quarantineSticker || "",
   } : null;
 
@@ -197,7 +162,7 @@ export default function QualityInspections({ user }) {
         Approved items are automatically added to inventory stock.
       </p>
 
-      {/* ── Persistent toast ── */}
+      {/* ── Toast ── */}
       {toast && (
         <div style={{
           position: "fixed", top: 24, right: 24, zIndex: 9999,
@@ -212,7 +177,7 @@ export default function QualityInspections({ user }) {
         </div>
       )}
 
-      {/* Approval confirmation card */}
+      {/* ── Approval confirmation card ── */}
       {lastApproval && (
         <div className="qc-approval-card" style={{ marginBottom: 20 }}>
           <div className="qc-approval-header">
@@ -225,8 +190,8 @@ export default function QualityInspections({ user }) {
           </div>
           <div className="qc-approval-details">
             <ApprovalDetail label="Approved Sticker" value={lastApproval.approvedSticker} highlight />
-            <ApprovalDetail label="Approved By" value={lastApproval.approvedBy} />
-            <ApprovalDetail label="Approved Date" value={lastApproval.approvedDate} />
+            <ApprovalDetail label="Approved By"      value={lastApproval.approvedBy} />
+            <ApprovalDetail label="Approved Date"    value={lastApproval.approvedDate} />
             <ApprovalDetail label="Inventory Status" value="In Stock (Usable)" />
           </div>
           <p className="muted" style={{ fontSize: 12, marginTop: 10 }}>
@@ -251,7 +216,6 @@ export default function QualityInspections({ user }) {
           </div>
 
           {loading && <p className="muted" style={{ padding: 12 }}>Loading…</p>}
-
           {!loading && grns.length === 0 && (
             <p className="empty-state">No GRNs are waiting for inspection.</p>
           )}
@@ -273,8 +237,6 @@ export default function QualityInspections({ user }) {
               </div>
             </button>
           ))}
-
-          {/* Recently approved (last 5 from a separate fetch would be ideal, but we'll show inline) */}
         </div>
 
         {/* ── Decision panel ── */}
@@ -301,7 +263,6 @@ export default function QualityInspections({ user }) {
                     <th>Unit</th>
                     <th>Invoice/Challan</th>
                     <th>Current QC Status</th>
-                    {(decision === "Partially Approved") && <th>Decision</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -313,18 +274,6 @@ export default function QualityInspections({ user }) {
                       <td>{item.unit}</td>
                       <td>{item.invoiceChallan || "—"}</td>
                       <td><Badge value={item.qualityStatus || "Pending Inspection"} /></td>
-                      {decision === "Partially Approved" && (
-                        <td>
-                          <select
-                            value={itemDecisions[item._id] || "Accepted"}
-                            onChange={e => setItemDecisions(prev => ({ ...prev, [item._id]: e.target.value }))}
-                            style={{ padding: "4px 8px", fontSize: 12, borderRadius: 4 }}
-                          >
-                            <option value="Accepted">Accept</option>
-                            <option value="Rejected">Reject</option>
-                          </select>
-                        </td>
-                      )}
                     </tr>
                   ))}
                 </tbody>
@@ -349,12 +298,11 @@ export default function QualityInspections({ user }) {
             {/* Sticker + confirm area */}
             {decision && (
               <div style={{ marginTop: 20 }}>
-                {/* For Approved/Rejected/PartiallyApproved show sticker form + apply button */}
-                {(decision === "Approved" || decision === "Partially Approved") && stickerGRN && (
+                {decision === "Approved" && stickerGRN && (
                   <QualitySticker
                     key={`${selectedGRN._id}-${decision}`}
                     grn={stickerGRN}
-                    decision={decision === "Partially Approved" ? "Approved" : decision}
+                    decision="Approved"
                     user={user}
                     onPrint={saveAndPrint}
                   />
@@ -371,7 +319,6 @@ export default function QualityInspections({ user }) {
                         onPrint={saveAndPrint}
                       />
                     )}
-                    {/* Also show a plain confirm button without needing the sticker */}
                     <button
                       type="button"
                       className="primary"

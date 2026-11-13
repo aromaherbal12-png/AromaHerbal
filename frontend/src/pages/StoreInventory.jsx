@@ -8,6 +8,7 @@ const money = (v) => new Intl.NumberFormat("en-IN", { style: "currency", currenc
 export default function StoreInventory() {
   const [stockItems, setStockItems]     = useState([]);
   const [grns, setGrns]                 = useState([]);
+  const [finishedGoods, setFinishedGoods] = useState([]);
   const [loading, setLoading]           = useState(false);
   const [messages, setMessages]         = useState({});
   const [issueValues, setIssueValues]   = useState({});
@@ -21,12 +22,14 @@ export default function StoreInventory() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [stockRes, grnRes] = await Promise.all([
+      const [stockRes, grnRes, fgRes] = await Promise.all([
         api.get("/inventory/stock-balances"),
-        api.get("/inventory/goods-receipts"),   // get all to show quarantine/rejected sections
+        api.get("/inventory/goods-receipts"),
+        api.get("/finished-goods"),
       ]);
       setStockItems(stockRes.items || []);
       setGrns(grnRes.items || []);
+      setFinishedGoods(Array.isArray(fgRes) ? fgRes : []);
     } catch (err) {
       console.error("Failed to load inventory:", err);
     } finally {
@@ -63,6 +66,8 @@ export default function StoreInventory() {
   const lowCount     = stockItems.filter(i => i.usableStock > 0 && i.lowStock).length;
   const rejectedGRNs = grns.filter(g => g.status === "Rejected" && !(g.disposition));
   const quarantinedGRNs = grns.filter(g => ["Quarantined", "Under Testing"].includes(g.status));
+  const availableFG  = finishedGoods.filter(fg => fg.status === "Available" && (fg.availableQuantity || 0) > 0);
+  const pendingFG    = finishedGoods.filter(fg => fg.status === "Pending Release");
 
   return (
     <section className="panel workflow-panel">
@@ -77,6 +82,8 @@ export default function StoreInventory() {
         <span>{stockCount} materials in stock</span>
         <span>{lowCount > 0 ? `⚠ ${lowCount} low-stock` : "All levels healthy"}</span>
         <span>{quarantinedGRNs.length} in quarantine / testing</span>
+        <span>{availableFG.length} finished goods lots available</span>
+        {pendingFG.length > 0 && <span style={{ color: "#795914" }}>⏳ {pendingFG.length} pending QC release</span>}
         <button
           type="button"
           className="secondary"
@@ -267,6 +274,67 @@ export default function StoreInventory() {
           </div>
         </section>
       )}
+
+      {/* ── Finished Goods ── */}
+      <section className="inventory-intake" style={{ marginTop: 32 }}>
+        <div className="section-heading">
+          <h3>Finished Goods Inventory</h3>
+          <span>{finishedGoods.length} total lots</span>
+        </div>
+        {finishedGoods.length === 0 ? (
+          <p className="empty-state">
+            No finished goods yet. Complete a production batch and pass QC to add finished goods.
+          </p>
+        ) : (
+          <div className="table-wrap">
+            <table style={{ fontSize: 13 }}>
+              <thead>
+                <tr>
+                  <th>Lot Number</th>
+                  <th>Product Name</th>
+                  <th>BMR No.</th>
+                  <th>Produced Qty</th>
+                  <th>Available Qty</th>
+                  <th>Dispatched Qty</th>
+                  <th>Unit</th>
+                  <th>Status</th>
+                  <th>Released On</th>
+                </tr>
+              </thead>
+              <tbody>
+                {finishedGoods.map(fg => {
+                  const statusStyle = {
+                    Available:        { bg: "#e6f2e7", color: "#27603b" },
+                    "Pending Release": { bg: "#fff8e1", color: "#795914" },
+                    Depleted:         { bg: "#f0f1ef", color: "#5a625c" },
+                    "On Hold":        { bg: "#fae7e5", color: "#a3332b" },
+                    Rejected:         { bg: "#fae7e5", color: "#a3332b" },
+                  }[fg.status] || { bg: "#f0f1ef", color: "#5a625c" };
+                  return (
+                    <tr key={fg._id}>
+                      <td style={{ fontFamily: "monospace", fontSize: 11 }}>{fg.lotNumber}</td>
+                      <td><b>{fg.productName}</b></td>
+                      <td style={{ fontFamily: "monospace", fontSize: 11 }}>{fg.bmrNumber || "—"}</td>
+                      <td>{fg.producedQuantity}</td>
+                      <td style={{ fontWeight: 700, color: fg.availableQuantity > 0 ? "#27603b" : "#999" }}>
+                        {fg.availableQuantity}
+                      </td>
+                      <td>{fg.dispatchedQuantity || 0}</td>
+                      <td>{fg.unit}</td>
+                      <td>
+                        <span style={{ background: statusStyle.bg, color: statusStyle.color, padding: "3px 9px", borderRadius: 99, fontSize: 11, fontWeight: 700 }}>
+                          {fg.status}
+                        </span>
+                      </td>
+                      <td>{fg.releasedAt ? new Date(fg.releasedAt).toLocaleDateString("en-IN") : "—"}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
     </section>
   );
 }

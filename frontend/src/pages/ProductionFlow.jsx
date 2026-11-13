@@ -43,14 +43,7 @@ export default function ProductionFlow({ user }) {
 
   const [p2, setP2] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "2 of 8", prodChemist: "", prodManager: "", authSign: "", rows: [mkDispRow(), mkDispRow(), mkDispRow(), mkDispRow(), mkDispRow()] });
   const [p3, setP3] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "3 of 8", prodChemist: "", prodManager: "", authSign: "", rows: [mkMatRow(), mkMatRow(), mkMatRow(), mkMatRow(), mkMatRow()] });
-  const [p4, setP4] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "4 of 8", prodChemist: "", prodManager: "", authSign: "",
-    step1: "Take water phase & oil phase in a mixer. For water phase add DM water at ………°C and bromopol …………. Start heating & stirring.",
-    step2: "For oil phase. Add Cetyl palmitate …………, Cetyl alcohol …………, CM-1000 …………, Stearyl stearate …………, Polysorbate-60 …………, Emulsifying wax …………, Cetostearyl alcohol …………, GMS …………, Isopropyl myristate…………, Stearic acid………… in the interval of 10 to 15 minutes of stirring.",
-    step3: "Stop heating when the mixture is evenly mixed. At 65°C temperature add Benzyl peroxide…………. Stir it for 15 to 20 minutes.",
-    step4: "Batch kept in clean container with proper label",
-    step5: "Sample to be sent to QC for in process analysis.",
-    step6: "After receipt of in process report from QC department batch transfer to packing department."
-  });
+  const [p4, setP4] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "4 of 8", prodChemist: "", prodManager: "", authSign: ""});
   const [p5, setP5] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "5 of 8", prodChemist: "", prodManager: "", authSign: "", batchFillingDate: "", totalTubesFilled: "", rows: [mkFillRow(), mkFillRow(), mkFillRow(), mkFillRow(), mkFillRow()] });
   const [p6, setP6] = useState({ productName: "", batchNo: "", batchSize: "", mfgDate: "", expDate: "", date: today(), pageNo: "6 of 8", prodChemist: "", prodManager: "", authSign: "",
     sampleQty: "", samplingBy: "",
@@ -107,14 +100,7 @@ export default function ProductionFlow({ user }) {
     // When no saved data, fall back to header-pre-filled defaults
     setP2(row.p2Data || { ...batchHdr, pageNo: "2 of 8", rows: [mkDispRow(), mkDispRow(), mkDispRow(), mkDispRow(), mkDispRow()] });
     setP3(row.p3Data || { ...batchHdr, pageNo: "3 of 8", rows: [mkMatRow(), mkMatRow(), mkMatRow(), mkMatRow(), mkMatRow()] });
-    setP4(row.p4Data || { ...batchHdr, pageNo: "4 of 8",
-      step1: "Take water phase & oil phase in a mixer. For water phase add DM water at ………°C and bromopol …………. Start heating & stirring.",
-      step2: "For oil phase. Add Cetyl palmitate …………, Cetyl alcohol …………, CM-1000 …………, Stearyl stearate …………, Polysorbate-60 …………, Emulsifying wax …………, Cetostearyl alcohol …………, GMS …………, Isopropyl myristate…………, Stearic acid………… in the interval of 10 to 15 minutes of stirring.",
-      step3: "Stop heating when the mixture is evenly mixed. At 65°C temperature add Benzyl peroxide…………. Stir it for 15 to 20 minutes.",
-      step4: "Batch kept in clean container with proper label",
-      step5: "Sample to be sent to QC for in process analysis.",
-      step6: "After receipt of in process report from QC department batch transfer to packing department."
-    });
+    setP4(row.p4Data || { ...batchHdr, pageNo: "4 of 8",});
     setP5(row.p5Data || { ...batchHdr, pageNo: "5 of 8", batchFillingDate: "", totalTubesFilled: "", rows: [mkFillRow(), mkFillRow(), mkFillRow(), mkFillRow(), mkFillRow()] });
     setP6(row.p6Data || { ...batchHdr, pageNo: "6 of 8",
       sampleQty: "", samplingBy: "",
@@ -211,7 +197,7 @@ export default function ProductionFlow({ user }) {
         unit: "units",
       });
       updateProductionBatch(selected.id, { addedToInventory: true, fgLotNumber: result.lotNumber, updatedBy: user?.name }, "Added to finished goods inventory");
-      setMessage(`✅ Added to finished goods as ${result.lotNumber}. Quality In-charge must release it before dispatch.`);
+      setMessage(`✅ Added to finished goods as ${result.lotNumber}. It is now available for dispatch.`);
     } catch (err) {
       const details = err?.data?.details;
       if (details && Array.isArray(details) && details.length > 0) {
@@ -618,11 +604,12 @@ function BmrSignatures({ data, onChange }) {
 const STEPS = ["step1","step2","step3","step4","step5","step6"];
 
 function ProcessLibrary({ p4, setP4 }) {
-  const [action, setAction]         = useState("");
-  const [processes, setProcesses]   = useState([]);
-  const [selectedId, setSelectedId] = useState("");
-  const [nameInput, setNameInput]   = useState("");
-  const [feedback, setFeedback]     = useState("");
+  const [action, setAction]             = useState("");
+  const [processes, setProcesses]       = useState([]);
+  const [selectedId, setSelectedId]     = useState("");
+  const [nameInput, setNameInput]       = useState("");
+  const [descriptionInput, setDescriptionInput] = useState("");
+  const [feedback, setFeedback]         = useState("");
 
   // Load from backend on mount
   useEffect(() => {
@@ -642,6 +629,7 @@ function ProcessLibrary({ p4, setP4 }) {
     setAction(value);
     setSelectedId("");
     setNameInput("");
+    setDescriptionInput("");
     setFeedback("");
   };
 
@@ -654,10 +642,11 @@ function ProcessLibrary({ p4, setP4 }) {
     }
     const steps = {};
     STEPS.forEach(k => { steps[k] = p4[k] || ""; });
-    const newProc = { id: `proc-${Date.now()}`, name, steps };
+    const newProc = { id: `proc-${Date.now()}`, name, description: descriptionInput.trim(), steps };
     persist([...processes, newProc]);
     api.post("/batch-data", { batchId: `PROC-${newProc.id}`, data: newProc }).catch(() => {});
     setNameInput("");
+    setDescriptionInput("");
     setFeedback(`✅ Process "${name}" saved to library.`);
   };
 
@@ -673,11 +662,12 @@ function ProcessLibrary({ p4, setP4 }) {
   const handleEdit = () => {
     if (!selectedProc) { setFeedback("Select a process to edit."); return; }
     const name = nameInput.trim() || selectedProc.name;
+    const description = descriptionInput.trim() !== "" ? descriptionInput.trim() : (selectedProc.description || "");
     const duplicate = processes.find(p => p.id !== selectedId && p.name.toLowerCase() === name.toLowerCase());
     if (duplicate) { setFeedback("Another process already uses that name."); return; }
     const updatedSteps = {};
     STEPS.forEach(k => { updatedSteps[k] = p4[k] || ""; });
-    const updatedProc = { ...selectedProc, name, steps: updatedSteps };
+    const updatedProc = { ...selectedProc, name, description, steps: updatedSteps };
     const updated = processes.map(p => p.id === selectedId ? updatedProc : p);
     persist(updated);
     api.post("/batch-data", { batchId: `PROC-${selectedProc.id}`, data: updatedProc }).catch(() => {});
@@ -713,17 +703,28 @@ function ProcessLibrary({ p4, setP4 }) {
 
       {/* CREATE */}
       {action === "create" && (
-        <div style={{ marginTop: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <input
-            type="text"
-            placeholder="Process name (e.g. Cream Base v2)"
-            value={nameInput}
-            onChange={e => setNameInput(e.target.value)}
-            style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", minWidth: 260, flex: 1 }}
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <input
+              type="text"
+              placeholder="Name of Procedure (e.g. Cream Base v2)"
+              value={nameInput}
+              onChange={e => setNameInput(e.target.value)}
+              style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", minWidth: 260, flex: 1 }}
+            />
+          </div>
+          <textarea
+            placeholder="Description — briefly describe what this procedure does, its purpose or product type"
+            value={descriptionInput}
+            onChange={e => setDescriptionInput(e.target.value)}
+            rows={2}
+            style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", resize: "vertical", fontFamily: "inherit" }}
           />
-          <button type="button" className="primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleCreate}>
-            Save current steps as new process
-          </button>
+          <div>
+            <button type="button" className="primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleCreate}>
+              Save current steps as new process
+            </button>
+          </div>
         </div>
       )}
 
@@ -740,27 +741,49 @@ function ProcessLibrary({ p4, setP4 }) {
                 style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", minWidth: 240 }}
               >
                 <option value="">— Select a saved process —</option>
-                {processes.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                {processes.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}{p.description ? ` — ${p.description.slice(0, 50)}${p.description.length > 50 ? "…" : ""}` : ""}
+                  </option>
+                ))}
               </select>
 
               {action === "use" && selectedId && (
-                <button type="button" className="primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleUse}>
-                  Load into steps
-                </button>
+                <>
+                  {selectedProc?.description && (
+                    <p style={{ margin: "8px 0 4px", fontSize: 12, color: "#59675f", fontStyle: "italic" }}>
+                      {selectedProc.description}
+                    </p>
+                  )}
+                  <button type="button" className="primary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleUse}>
+                    Load into steps
+                  </button>
+                </>
               )}
 
               {action === "edit" && selectedId && (
                 <>
-                  <input
-                    type="text"
-                    placeholder={selectedProc?.name || "New name (leave blank to keep)"}
-                    value={nameInput}
-                    onChange={e => setNameInput(e.target.value)}
-                    style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", minWidth: 220 }}
-                  />
-                  <button type="button" className="secondary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleEdit}>
-                    Update process
-                  </button>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, width: "100%", marginTop: 8 }}>
+                    <input
+                      type="text"
+                      placeholder={selectedProc?.name || "New name (leave blank to keep)"}
+                      value={nameInput}
+                      onChange={e => setNameInput(e.target.value)}
+                      style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc" }}
+                    />
+                    <textarea
+                      placeholder={selectedProc?.description || "Description (leave blank to keep existing)"}
+                      value={descriptionInput}
+                      onChange={e => setDescriptionInput(e.target.value)}
+                      rows={2}
+                      style={{ padding: "6px 10px", fontSize: 13, borderRadius: 6, border: "1px solid #cbd6cc", resize: "vertical", fontFamily: "inherit" }}
+                    />
+                    <div>
+                      <button type="button" className="secondary" style={{ fontSize: 12, padding: "6px 14px" }} onClick={handleEdit}>
+                        Update process
+                      </button>
+                    </div>
+                  </div>
                 </>
               )}
 
