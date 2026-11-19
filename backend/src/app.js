@@ -60,9 +60,30 @@ app.use(
   })
 );
 
+// CORS configuration to support multiple origins:
+// - Local development: http://localhost:5174, http://127.0.0.1:5174, http://127.0.0.1:5175
+// - Deployed production: https://aromaherbal.onrender.com, https://aromaherbal-1.onrender.com
+// - Primary origin from env.clientUrl
+const allowedOrigins = [
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
+  "http://127.0.0.1:5175",
+  "http://localhost:5175",
+  "https://aromaherbal.onrender.com",
+  "https://aromaherbal-1.onrender.com",
+  env.clientUrl, // Include the env var as primary
+];
+
 app.use(
   cors({
-    origin: env.clientUrl,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS policy: origin not allowed"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, // Allow cookies/credentials

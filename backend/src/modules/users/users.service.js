@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import User, { USER_ROLES } from "./models/User.js";
 import { ApiError } from "../../utils/ApiError.js";
 
@@ -8,8 +9,8 @@ export async function getCurrentUser(userId) {
 }
 
 export async function listUsers() {
-  return User.find()
-    .select("name email role isActive lastLoginAt createdAt updatedAt -passwordHash")
+  return await User.find()
+    .select("-passwordHash")
     .sort({ createdAt: -1 })
     .lean();
 }
@@ -41,5 +42,17 @@ export async function updateUserStatus(userId, isActive, actorId) {
   }
   target.isActive = isActive;
   await target.save();
+  return target.toJSON();
+}
+
+export async function updateUserPassword(userId, newPassword) {
+  const target = await User.findById(userId);
+  if (!target) throw new ApiError(404, "User not found");
+  
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  target.passwordHash = passwordHash;
+  await target.save();
+  
+  // Return without exposing the password hash
   return target.toJSON();
 }

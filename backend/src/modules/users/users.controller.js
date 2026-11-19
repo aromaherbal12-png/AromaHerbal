@@ -1,4 +1,4 @@
-import { getCurrentUser, listUsers, updateUserRole, updateUserStatus } from "./users.service.js";
+import { getCurrentUser, listUsers, updateUserRole, updateUserStatus, updateUserPassword } from "./users.service.js";
 import { ApiResponse } from "../../utils/ApiResponse.js";
 
 export async function getMe(req, res, next) {
@@ -31,4 +31,16 @@ export async function changeStatus(req, res, next) {
     const user = await updateUserStatus(id, isActive, req.user._id);
     res.status(200).json(new ApiResponse(200, "User status updated successfully", user));
   } catch (error) { next(error); }
+}
+
+
+export async function updatePassword(req, res, next) {
+  try {
+    const { id } = req.validated.params;
+    const { newPassword } = req.validated.body;
+    await updateUserPassword(id, newPassword);
+    res.status(200).json(new ApiResponse(200, "Password updated successfully"));
+  } catch (error) {
+    next(error);
+  }
 }
