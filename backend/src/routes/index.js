@@ -15,6 +15,7 @@ import reportsRoutes from "../modules/reports/reports.routes.js";
 import auditRoutes from "../modules/audit/audit.routes.js";
 import messagesRoutes from "../modules/messages/messages.routes.js";
 import batchDataRoutes from "../modules/production/batchData.routes.js";
+import receiverRoutes from "../modules/receivers/receivers.routes.js";
 
 const router = Router();
 
@@ -67,5 +68,6 @@ router.use("/reports", reportsRoutes);
 router.use("/audit", auditRoutes);
 router.use("/messages", messagesRoutes);
 router.use("/batch-data", batchDataRoutes);
+router.use("/receivers", receiverRoutes);
 
 export default router;

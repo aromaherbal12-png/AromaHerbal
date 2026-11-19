@@ -63,14 +63,32 @@ export default function PurchaseOrderForm({ user }) {
   const [poMessage, setPoMessage]   = useState("");
   const [form, setForm]             = useState({
     fromGst: "27AAICA3466D1ZS",
-    toAddress: "Magus Organochem\n34, Aggarwal Shoppers Plaza,\nBlock-I, Sector 16, Rohini,\nNew Delhi-110089",
-    toGst: "07AIDPG7631E1ZK",
+    toAddress: "",
+    toGst: "",
     quotationNo: "", date: todayStr(), expectedDate: "", transporter: "", packagingForwarding: "0",
   });
   const [orderType, setOrderType]   = useState("Purchase Order");
   const [savedPO, setSavedPO]       = useState(null);
   const [poLoading, setPoLoading]   = useState(false);
   const [selectedPOForTracking, setSelectedPOForTracking] = useState(null);
+
+  // ── Receiver state ──
+  const [receivers,          setReceivers]          = useState([]);
+  const [selectedReceiverId, setSelectedReceiverId] = useState("");
+  const [receiverMode,       setReceiverMode]       = useState(null); // null | "create" | "update"
+  const [receiverForm,       setReceiverForm]       = useState({ name: "", address: "" });
+  const [receiverLoading,    setReceiverLoading]    = useState(false);
+  const [receiverMessage,    setReceiverMessage]    = useState("");
+  const [updateTargetId,     setUpdateTargetId]     = useState(""); // which receiver to update
+
+  const loadReceivers = useCallback(async () => {
+    try {
+      const data = await api.get("/receivers");
+      setReceivers(data || []);
+    } catch { /* silent */ }
+  }, []);
+
+  useEffect(() => { loadReceivers(); }, [loadReceivers]);
 
   // ── Email modal state ──
   const [emailModal, setEmailModal] = useState(false);
@@ -122,6 +140,57 @@ export default function PurchaseOrderForm({ user }) {
   // ── PO form handlers ──────────────────────────────────────────────────────
   const changeForm  = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const changeDraft = (k, v) => setDraft(d => ({ ...d, [k]: v }));
+
+  // ── Receiver handlers (defined after changeForm) ──────────────────────────
+  const selectReceiver = (id) => {
+    setSelectedReceiverId(id);
+    if (!id) { changeForm("toAddress", ""); return; }
+    const r = receivers.find(x => x._id === id);
+    if (r) changeForm("toAddress", `${r.name}\n${r.address}`);
+  };
+
+  const handleCreateReceiver = async () => {
+    if (!receiverForm.name.trim() || !receiverForm.address.trim()) {
+      setReceiverMessage("Both name and address are required."); return;
+    }
+    try {
+      setReceiverLoading(true);
+      setReceiverMessage("");
+      const created = await api.post("/receivers", receiverForm);
+      await loadReceivers();
+      setSelectedReceiverId(created._id);
+      changeForm("toAddress", `${created.name}\n${created.address}`);
+      setReceiverForm({ name: "", address: "" });
+      setReceiverMode(null);
+      setReceiverMessage("✅ Receiver created.");
+      setTimeout(() => setReceiverMessage(""), 3000);
+    } catch (err) {
+      setReceiverMessage(`❌ ${err?.data?.message || err?.message || "Failed to create receiver"}`);
+    } finally { setReceiverLoading(false); }
+  };
+
+  const handleUpdateReceiver = async () => {
+    if (!updateTargetId) { setReceiverMessage("Select a receiver to update."); return; }
+    if (!receiverForm.name.trim() || !receiverForm.address.trim()) {
+      setReceiverMessage("Both name and address are required."); return;
+    }
+    try {
+      setReceiverLoading(true);
+      setReceiverMessage("");
+      await api.patch(`/receivers/${updateTargetId}`, receiverForm);
+      await loadReceivers();
+      if (selectedReceiverId === updateTargetId) {
+        changeForm("toAddress", `${receiverForm.name}\n${receiverForm.address}`);
+      }
+      setReceiverForm({ name: "", address: "" });
+      setUpdateTargetId("");
+      setReceiverMode(null);
+      setReceiverMessage("✅ Receiver updated.");
+      setTimeout(() => setReceiverMessage(""), 3000);
+    } catch (err) {
+      setReceiverMessage(`❌ ${err?.data?.message || err?.message || "Failed to update receiver"}`);
+    } finally { setReceiverLoading(false); }
+  };
 
   const addProduct = (continueToTotals) => {
     if (!draftValid) { setPoMessage("Complete all product fields first."); return; }
@@ -438,7 +507,182 @@ export default function PurchaseOrderForm({ user }) {
         <div className="po-form-section">
           <h3>To</h3>
           <div className="po-form-grid">
-            <label className="field-label">Recipient and address<textarea value={form.toAddress} onChange={e => changeForm("toAddress", e.target.value)} rows="4" required disabled={Boolean(savedPO)} /></label>
+            {/* Left: receiver selector + create/update panel */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+              {/* Select receiver dropdown */}
+              <label className="field-label">
+                Select receiver
+                <select
+                  value={selectedReceiverId}
+                  onChange={e => selectReceiver(e.target.value)}
+                  disabled={Boolean(savedPO)}
+                >
+                  <option value="">— choose a receiver —</option>
+                  {receivers.map(r => (
+                    <option key={r._id} value={r._id}>{r.name}</option>
+                  ))}
+                </select>
+              </label>
+
+              {/* Combined name + address read-only preview (what goes into the PO) */}
+              <label className="field-label">
+                Recipient and address
+                <textarea
+                  value={form.toAddress}
+                  onChange={e => changeForm("toAddress", e.target.value)}
+                  rows="4"
+                  required
+                  disabled={Boolean(savedPO)}
+                  placeholder="Select a receiver above, or type manually"
+                />
+              </label>
+
+              {/* Action buttons */}
+              {!savedPO && (
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    className={receiverMode === "create" ? "primary" : "secondary"}
+                    onClick={() => {
+                      setReceiverMode(receiverMode === "create" ? null : "create");
+                      setReceiverForm({ name: "", address: "" });
+                      setReceiverMessage("");
+                    }}
+                  >
+                    + Create Receiver
+                  </button>
+                  <button
+                    type="button"
+                    className={receiverMode === "update" ? "primary" : "secondary"}
+                    onClick={() => {
+                      setReceiverMode(receiverMode === "update" ? null : "update");
+                      setReceiverForm({ name: "", address: "" });
+                      setUpdateTargetId("");
+                      setReceiverMessage("");
+                    }}
+                  >
+                    ✏️ Update Receiver
+                  </button>
+                </div>
+              )}
+
+              {/* ── Create Receiver inline form ── */}
+              {receiverMode === "create" && !savedPO && (
+                <div style={{
+                  border: "1px solid #cbd6cc", borderRadius: 10,
+                  padding: "16px", background: "#f9fbf8",
+                  display: "flex", flexDirection: "column", gap: 10,
+                }}>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 13, color: "var(--green-dark)" }}>
+                    New Receiver
+                  </p>
+                  <label className="field-label">
+                    Name
+                    <input
+                      type="text"
+                      value={receiverForm.name}
+                      onChange={e => setReceiverForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="e.g. Magus Organochem"
+                    />
+                  </label>
+                  <label className="field-label">
+                    Address
+                    <textarea
+                      rows="3"
+                      value={receiverForm.address}
+                      onChange={e => setReceiverForm(f => ({ ...f, address: e.target.value }))}
+                      placeholder="Full address"
+                    />
+                  </label>
+                  {receiverMessage && (
+                    <p style={{ margin: 0, fontSize: 13, color: receiverMessage.startsWith("✅") ? "#27603b" : "#a3332b" }}>
+                      {receiverMessage}
+                    </p>
+                  )}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button type="button" className="primary" onClick={handleCreateReceiver} disabled={receiverLoading}>
+                      {receiverLoading ? "Saving…" : "Save Receiver"}
+                    </button>
+                    <button type="button" className="secondary" onClick={() => { setReceiverMode(null); setReceiverMessage(""); }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Update Receiver inline form ── */}
+              {receiverMode === "update" && !savedPO && (
+                <div style={{
+                  border: "1px solid #cbd6cc", borderRadius: 10,
+                  padding: "16px", background: "#f9fbf8",
+                  display: "flex", flexDirection: "column", gap: 10,
+                }}>
+                  <p style={{ margin: 0, fontWeight: 700, fontSize: 13, color: "var(--green-dark)" }}>
+                    Update Receiver
+                  </p>
+                  <label className="field-label">
+                    Select receiver to edit
+                    <select
+                      value={updateTargetId}
+                      onChange={e => {
+                        const id = e.target.value;
+                        setUpdateTargetId(id);
+                        const r = receivers.find(x => x._id === id);
+                        setReceiverForm(r ? { name: r.name, address: r.address } : { name: "", address: "" });
+                      }}
+                    >
+                      <option value="">— choose —</option>
+                      {receivers.map(r => (
+                        <option key={r._id} value={r._id}>{r.name}</option>
+                      ))}
+                    </select>
+                  </label>
+                  {updateTargetId && (
+                    <>
+                      <label className="field-label">
+                        Name
+                        <input
+                          type="text"
+                          value={receiverForm.name}
+                          onChange={e => setReceiverForm(f => ({ ...f, name: e.target.value }))}
+                        />
+                      </label>
+                      <label className="field-label">
+                        Address
+                        <textarea
+                          rows="3"
+                          value={receiverForm.address}
+                          onChange={e => setReceiverForm(f => ({ ...f, address: e.target.value }))}
+                        />
+                      </label>
+                    </>
+                  )}
+                  {receiverMessage && (
+                    <p style={{ margin: 0, fontSize: 13, color: receiverMessage.startsWith("✅") ? "#27603b" : "#a3332b" }}>
+                      {receiverMessage}
+                    </p>
+                  )}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button type="button" className="primary" onClick={handleUpdateReceiver} disabled={receiverLoading || !updateTargetId}>
+                      {receiverLoading ? "Saving…" : "Update Receiver"}
+                    </button>
+                    <button type="button" className="secondary" onClick={() => { setReceiverMode(null); setReceiverMessage(""); setUpdateTargetId(""); }}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Persistent message outside the panels (after create/update closes) */}
+              {!receiverMode && receiverMessage && (
+                <p style={{ margin: 0, fontSize: 13, color: receiverMessage.startsWith("✅") ? "#27603b" : "#a3332b" }}>
+                  {receiverMessage}
+                </p>
+              )}
+            </div>
+
+            {/* Right: GST field (unchanged) */}
             <Field label="To GST No." value={form.toGst} onChange={v => changeForm("toGst", v)} required disabled={Boolean(savedPO)} />
           </div>
         </div>
@@ -538,8 +782,13 @@ export default function PurchaseOrderForm({ user }) {
                   setDraft(EMPTY_PRODUCT);
                   setStage("products");
                   setOrderType("Purchase Order");
-                  setForm({ fromGst: "27AAICA3466D1ZS", toAddress: "Magus Organochem\n34, Aggarwal Shoppers Plaza,\nBlock-I, Sector 16, Rohini,\nNew Delhi-110089", toGst: "07AIDPG7631E1ZK", quotationNo: "", date: todayStr(), expectedDate: "", transporter: "", packagingForwarding: "0" });
+                  setForm({ fromGst: "27AAICA3466D1ZS", toAddress: "", toGst: "07AIDPG7631E1ZK", quotationNo: "", date: todayStr(), expectedDate: "", transporter: "", packagingForwarding: "0" });
                   setPoMessage("");
+                  setSelectedReceiverId("");
+                  setReceiverMode(null);
+                  setReceiverForm({ name: "", address: "" });
+                  setReceiverMessage("");
+                  setUpdateTargetId("");
                 }}>
                   + Create New PO
                 </button>
