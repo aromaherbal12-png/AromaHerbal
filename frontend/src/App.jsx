@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { ArrowRight, ClipboardList, Factory, FlaskConical, Home, LogOut, MessageSquare, Package, ShieldCheck, Truck, UserPlus } from "lucide-react";
+import { ArrowRight, ClipboardList, Factory, FlaskConical, Home, LogOut, MessageSquare, Package, ShieldCheck, Truck, UserPlus, Key } from "lucide-react";
 import "./styles/workflow.css";
 import StoreGRNs from "./pages/StoreGRNs.jsx";
 import QualityInspections from "./pages/QualityInspections.jsx";
 import ProductionFlow from "./pages/ProductionFlow.jsx";
 import Messages from "./pages/Messages.jsx";
+import { ManagePasswords } from "./pages/ManagePasswords.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import messagesApi from "./services/messagesApi.js";
 import api from "./services/api.js";
@@ -206,8 +207,11 @@ export default function App() {
     { id: "production", label: "Production flow", icon: Factory },
     { id: "reports", label: "Inventory reports", icon: ClipboardList },
     { id: "access", label: "Roles & access", icon: ShieldCheck },
+    { id: "manage-passwords", label: "Manage passwords", icon: Key },
     { id: "messages", label: "Messages", icon: MessageSquare },
   ].filter((item) => {
+    // Manage Passwords: admin only
+    if (item.id === "manage-passwords") return user.role === "Administrator";
     // Store-Incharge: limited to store and reports
     if (user.role === "Store-Incharge") return ["store-grns", "reports", "messages"].includes(item.id);
     // Quality-Incharge: limited to quality inspections and reports only
@@ -241,11 +245,12 @@ export default function App() {
       )}
     </button>
   ))}<div className="side-note"><span className={`live-dot ${backendHealth.status === 'connected' ? 'connected' : backendHealth.status === 'checking' ? 'checking' : 'disconnected'}`} />{backendHealth.status === 'connected' ? 'Connected' : backendHealth.status === 'checking' ? 'Connecting...' : 'Disconnected'} <small>JWT · {backendHealth.database === 'connected' ? 'MongoDB online' : backendHealth.database === 'unknown' ? 'DB checking...' : 'MongoDB offline'}</small></div><button className="user-card" onClick={logout}><span className="avatar">{user.name.slice(0, 1).toUpperCase()}</span><span><b>{user.name}</b><small>{user.role}</small></span><LogOut size={17} /></button></aside>
-    <main className="main-area"><header className="topbar"><div><span className="breadcrumb">Aroma workspace / {navigation.find((item) => item.id === section)?.label}</span><h1>{section === "store-grns" ? "Store · Goods Receipt Notes" : section === "quality-inspections" ? "Quality · Material inspections" : section === "production" ? "Production management" : section === "reports" ? "Inventory reports" : section === "messages" ? "Messages" : "Roles & access"}</h1></div><span className="role-pill">{user.role}</span></header>
+    <main className="main-area"><header className="topbar"><div><span className="breadcrumb">Aroma workspace / {navigation.find((item) => item.id === section)?.label}</span><h1>{section === "store-grns" ? "Store · Goods Receipt Notes" : section === "quality-inspections" ? "Quality · Material inspections" : section === "production" ? "Production management" : section === "reports" ? "Inventory reports" : section === "manage-passwords" ? "Manage account passwords" : section === "messages" ? "Messages" : "Roles & access"}</h1></div><span className="role-pill">{user.role}</span></header>
       {section === "store-grns" && <StoreGRNs user={user} />}
       {section === "quality-inspections" && <QualityInspections user={user} />}
       {section === "production" && <ProductionFlow user={user} />}
       {section === "reports" && <Reports />}
+      {section === "manage-passwords" && <ManagePasswords />}
       {section === "access" && <Access />}
       {section === "messages" && <Messages user={user} onUnreadChange={setUnreadMessages} />}
     </main></div>;

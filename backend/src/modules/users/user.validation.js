@@ -28,3 +28,23 @@ export const updateStatusSchema = z.object({
   }),
   query: z.object({}),
 });
+
+export const updatePasswordSchema = z.object({
+  body: z.object({
+    newPassword: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[a-zA-Z]/, "Password must contain at least one letter")
+      .regex(/[0-9]/, "Password must contain at least one number"),
+    confirmPassword: z.string(),
+  })
+  .strict()
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  }),
+  params: z.object({
+    id: z.string().regex(/^[a-f\d]{24}$/i, "Invalid user ID"),
+  }),
+  query: z.object({}),
+});
