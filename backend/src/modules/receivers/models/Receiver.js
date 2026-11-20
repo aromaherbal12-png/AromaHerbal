@@ -14,6 +14,12 @@ const receiverSchema = new mongoose.Schema(
       trim: true,
       maxlength: 1000,
     },
+    gstNo: {
+      type: String,
+      trim: true,
+      maxlength: 50,
+      default: "",
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

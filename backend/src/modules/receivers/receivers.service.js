@@ -5,6 +5,7 @@ export async function createReceiver(data, actorId) {
   const receiver = await Receiver.create({
     name: data.name.trim(),
     address: data.address.trim(),
+    gstNo: data.gstNo?.trim() || "",
     createdBy: actorId,
   });
   return receiver.toObject();
@@ -21,8 +22,9 @@ export async function updateReceiver(id, data, actorId) {
   const receiver = await Receiver.findById(id);
   if (!receiver) throw new ApiError(404, "Receiver not found");
 
-  if (data.name !== undefined) receiver.name = data.name.trim();
+  if (data.name    !== undefined) receiver.name    = data.name.trim();
   if (data.address !== undefined) receiver.address = data.address.trim();
+  if (data.gstNo   !== undefined) receiver.gstNo   = data.gstNo.trim();
   receiver.updatedBy = actorId;
 
   await receiver.save();

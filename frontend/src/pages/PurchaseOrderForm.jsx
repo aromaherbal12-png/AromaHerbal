@@ -76,7 +76,7 @@ export default function PurchaseOrderForm({ user }) {
   const [receivers,          setReceivers]          = useState([]);
   const [selectedReceiverId, setSelectedReceiverId] = useState("");
   const [receiverMode,       setReceiverMode]       = useState(null); // null | "create" | "update"
-  const [receiverForm,       setReceiverForm]       = useState({ name: "", address: "" });
+  const [receiverForm,       setReceiverForm]       = useState({ name: "", address: "", gstNo: "" });
   const [receiverLoading,    setReceiverLoading]    = useState(false);
   const [receiverMessage,    setReceiverMessage]    = useState("");
   const [updateTargetId,     setUpdateTargetId]     = useState(""); // which receiver to update
@@ -144,14 +144,17 @@ export default function PurchaseOrderForm({ user }) {
   // ── Receiver handlers (defined after changeForm) ──────────────────────────
   const selectReceiver = (id) => {
     setSelectedReceiverId(id);
-    if (!id) { changeForm("toAddress", ""); return; }
+    if (!id) { changeForm("toAddress", ""); changeForm("toGst", ""); return; }
     const r = receivers.find(x => x._id === id);
-    if (r) changeForm("toAddress", `${r.name}\n${r.address}`);
+    if (r) {
+      changeForm("toAddress", `${r.name}\n${r.address}`);
+      changeForm("toGst", r.gstNo || "");
+    }
   };
 
   const handleCreateReceiver = async () => {
     if (!receiverForm.name.trim() || !receiverForm.address.trim()) {
-      setReceiverMessage("Both name and address are required."); return;
+      setReceiverMessage("Name and Address are required."); return;
     }
     try {
       setReceiverLoading(true);
@@ -160,7 +163,8 @@ export default function PurchaseOrderForm({ user }) {
       await loadReceivers();
       setSelectedReceiverId(created._id);
       changeForm("toAddress", `${created.name}\n${created.address}`);
-      setReceiverForm({ name: "", address: "" });
+      changeForm("toGst", created.gstNo || "");
+      setReceiverForm({ name: "", address: "", gstNo: "" });
       setReceiverMode(null);
       setReceiverMessage("✅ Receiver created.");
       setTimeout(() => setReceiverMessage(""), 3000);
@@ -181,8 +185,9 @@ export default function PurchaseOrderForm({ user }) {
       await loadReceivers();
       if (selectedReceiverId === updateTargetId) {
         changeForm("toAddress", `${receiverForm.name}\n${receiverForm.address}`);
+        changeForm("toGst", receiverForm.gstNo || "");
       }
-      setReceiverForm({ name: "", address: "" });
+      setReceiverForm({ name: "", address: "", gstNo: "" });
       setUpdateTargetId("");
       setReceiverMode(null);
       setReceiverMessage("✅ Receiver updated.");
@@ -546,7 +551,7 @@ export default function PurchaseOrderForm({ user }) {
                     className={receiverMode === "create" ? "primary" : "secondary"}
                     onClick={() => {
                       setReceiverMode(receiverMode === "create" ? null : "create");
-                      setReceiverForm({ name: "", address: "" });
+                      setReceiverForm({ name: "", address: "", gstNo: "" });
                       setReceiverMessage("");
                     }}
                   >
@@ -557,7 +562,7 @@ export default function PurchaseOrderForm({ user }) {
                     className={receiverMode === "update" ? "primary" : "secondary"}
                     onClick={() => {
                       setReceiverMode(receiverMode === "update" ? null : "update");
-                      setReceiverForm({ name: "", address: "" });
+                      setReceiverForm({ name: "", address: "", gstNo: "" });
                       setUpdateTargetId("");
                       setReceiverMessage("");
                     }}
@@ -595,6 +600,15 @@ export default function PurchaseOrderForm({ user }) {
                       placeholder="Full address"
                     />
                   </label>
+                  <label className="field-label">
+                    GST No.
+                    <input
+                      type="text"
+                      value={receiverForm.gstNo}
+                      onChange={e => setReceiverForm(f => ({ ...f, gstNo: e.target.value }))}
+                      placeholder="e.g. 07AIDPG7631E1ZK (optional)"
+                    />
+                  </label>
                   {receiverMessage && (
                     <p style={{ margin: 0, fontSize: 13, color: receiverMessage.startsWith("✅") ? "#27603b" : "#a3332b" }}>
                       {receiverMessage}
@@ -629,7 +643,7 @@ export default function PurchaseOrderForm({ user }) {
                         const id = e.target.value;
                         setUpdateTargetId(id);
                         const r = receivers.find(x => x._id === id);
-                        setReceiverForm(r ? { name: r.name, address: r.address } : { name: "", address: "" });
+                        setReceiverForm(r ? { name: r.name, address: r.address, gstNo: r.gstNo || "" } : { name: "", address: "", gstNo: "" });
                       }}
                     >
                       <option value="">— choose —</option>
@@ -654,6 +668,15 @@ export default function PurchaseOrderForm({ user }) {
                           rows="3"
                           value={receiverForm.address}
                           onChange={e => setReceiverForm(f => ({ ...f, address: e.target.value }))}
+                        />
+                      </label>
+                      <label className="field-label">
+                        GST No.
+                        <input
+                          type="text"
+                          value={receiverForm.gstNo}
+                          onChange={e => setReceiverForm(f => ({ ...f, gstNo: e.target.value }))}
+                          placeholder="e.g. 07AIDPG7631E1ZK (optional)"
                         />
                       </label>
                     </>
